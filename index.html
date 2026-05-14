@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>KANBAN</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -20,7 +20,7 @@
         <ul class="sidebar-links">
 
             <li>
-                <a href="#" class="sidebar-object active">
+                <a href="#" class="sidebar-object active" page-section="page-dashboard">
                     <span class="material-symbols-outlined">
                         dashboard
                     </span>
@@ -28,7 +28,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="sidebar-object">
+                <a href="#" class="sidebar-object" page-section="page-myBoard">
                     <span class="material-symbols-outlined">
                         note_stack
                     </span>
@@ -36,7 +36,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="sidebar-object">
+                <a href="#" class="sidebar-object" page-section="page-settings">
                     <span class="material-symbols-outlined">
                         settings
                     </span>
@@ -57,19 +57,42 @@
 
     <main class="main-content">
 
-        <section class="page-section active" id="dashboard">
+        <section class="page-section active" id="page-dashboard">
             <h1>Dashboard</h1>
         </section>
 
-        <section class="page-section" id="myBoard">
+        <section class="page-section" id="page-myBoard">
             <h1>My Board</h1>
         </section>
 
-        <section class="page-section" id="settings">
+        <section class="page-section" id="page-settings">
             <h1>Settings</h1>
         </section>
 
     </main>
+
+
+    <script>
+        const sidebarLinks = document.querySelectorAll('.sidebar-object');
+        const pageSections = document.querySelectorAll('.page-section');
+
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // Remove active class from all links and sections
+                sidebarLinks.forEach(link => link.classList.remove('active'));
+                pageSections.forEach(section => section.classList.remove('active'));
+
+                // Add active class to the clicked link and corresponding section
+                link.classList.add('active');
+                const targetSection = document.querySelector(`#${link.getAttribute('page-section')}`);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            });
+        });
+    </script>
 
 </body>
 

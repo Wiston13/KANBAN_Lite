@@ -52,7 +52,7 @@ body {
     display: flex;
     flex-direction: column;
 
-    padding: 24px 15px 18px;
+    padding: 24px 15px 24px;
     background-color: var(--bg-sidebar);
     border-right: 1px solid var(--border-soft);
 
@@ -248,14 +248,27 @@ body {
     transform: translateX(0);
 }
 
+
 main {
     margin-left: 80px;
-    padding: 24px;
-    transition:
-        background-color 180ms ease,
-        border-color 180ms ease;
+    padding: 12px;
+    min-height: 100vh;
+    /* transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1); */
 }
 
-.sidebar:hover~main {
+
+/* .sidebar:hover~main {
     margin-left: 240px;
+} */
+
+.page-section {
+    display: none;
+
+}
+
+.page-section.active {
+    display: block;
+    background-color: var(--text-muted);
+    padding: 450px 2px;
+    border-radius: 2%;
 }
