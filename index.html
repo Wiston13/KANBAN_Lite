@@ -6,34 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 
 <body>
+
     <aside class="sidebar">
         <div class="sidebar-header">
             <h2>KANBAN</h2>
         </div>
+        <hr>
         <ul class="sidebar-links">
+
             <li>
-                <a href="#" class="sidebar-object" id="Dashboard"><span>Dashboard</span></a>
+                <a href="#" class="sidebar-object active">
+                    <span class="material-symbols-outlined">
+                        dashboard
+                    </span>
+                    <span class="sidebar-label">Dashboard</span>
+                </a>
             </li>
             <li>
-                <a href="#" class="sidebar-object" id="myBoard"><span>My Board</span></a>
+                <a href="#" class="sidebar-object">
+                    <span class="material-symbols-outlined">
+                        note_stack
+                    </span>
+                    <span class="sidebar-label">My Board</span>
+                </a>
             </li>
             <li>
-                <a href="#" class="sidebar-object" id="settings"><span>Settings</span></a>
+                <a href="#" class="sidebar-object">
+                    <span class="material-symbols-outlined">
+                        settings
+                    </span>
+                    <span class="sidebar-label">Settings</span>
+                </a>
             </li>
         </ul>
 
         <div class="user-account">
             <div class="user-profile">
-                <img src="" alt="Profile Image">
+                <img src="./img/avatar.png" alt="Profile Image">
                 <div class="user-detail">
                     <h3>Admin</h3>
                 </div>
             </div>
         </div>
     </aside>
+
+    <main class="main-content">
+
+        <section class="page-section active" id="dashboard">
+            <h1>Dashboard</h1>
+        </section>
+
+        <section class="page-section" id="myBoard">
+            <h1>My Board</h1>
+        </section>
+
+        <section class="page-section" id="settings">
+            <h1>Settings</h1>
+        </section>
+
+    </main>
+
 </body>
 
 </html>

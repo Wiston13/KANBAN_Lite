@@ -1,3 +1,30 @@
+:root {
+    /* Background */
+    --bg-main: #0F1117;
+    --bg-sidebar: #121621;
+    --bg-surface: #1A2030;
+    --bg-surface-hover: #222A3D;
+
+    /* Border */
+    --border-soft: #252D3D;
+    --border-strong: #33405A;
+
+    /* Text */
+    --text-primary: #F3F4F6;
+    --text-secondary: #A7B0C0;
+    --text-muted: #748094;
+
+    /* Accent */
+    --accent: #6D7CFF;
+    --accent-hover: #8290FF;
+    --accent-soft: rgba(109, 124, 255, 0.16);
+
+    /* Semantic */
+    --success: #3DD68C;
+    --warning: #F5B942;
+    --danger: #FF6B6B;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,99 +32,230 @@
 }
 
 body {
-    background-color: rgb(15, 17, 23);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
     min-height: 100vh;
+    font-family: Arial, "Noto Sans TC", sans-serif;
 }
 
-
+/* =========================
+   Sidebar
+========================= */
 
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 100vh;
     width: 80px;
+
     display: flex;
     flex-direction: column;
-    background-color: rgb();
-    padding: 20px 15px;
-    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    /* 防止文字溢出 */
+
+    padding: 24px 15px 18px;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-soft);
+
     overflow: hidden;
-    border-right: 1px solid rgb(48, 54, 61);
     z-index: 100;
+
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar:hover {
     width: 240px;
 }
 
-.sidebar h2,
-.sidebar span {
-    color: azure;
-    /* 強制不換行 */
+/* =========================
+   Sidebar Header
+========================= */
+
+.sidebar-header h2 {
+    text-align: center;
+    padding: 10px 0 24px;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
     white-space: nowrap;
-    /* 預設透明度為0 */
+
     opacity: 0;
-    transition: opacity 200ms;
+    transform: translateX(-4px);
+
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease;
 }
 
-.sidebar:hover h2,
-.sidebar:hover span {
+.sidebar:hover .sidebar-header h2 {
     opacity: 1;
+    transform: translateX(0);
 }
+
+
+/* =========================
+   Sidebar Links
+========================= */
 
 .sidebar-links {
     list-style: none;
-    margin-top: 30px;
+    margin-top: 24px;
 }
 
 .sidebar-links li {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .sidebar-object {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    width: 100%;
+    padding: 12px 12px;
+    border-radius: 10px;
+
     text-decoration: none;
-    display: block;
-    padding: 10px;
-    border-radius: 8px;
-    transition: bavkground 0.2s;
+    color: var(--text-secondary);
+    background-color: transparent;
+
+    transition:
+        background-color 180ms ease,
+        color 180ms ease;
 }
 
-.sidebar-object:hover {
-    /* 滑過選項時有微光 */
-    background-color: rgba(255, 255, 255, 0.1);
+/* icon 永遠顯示 */
+.sidebar-object .material-symbols-outlined {
+    flex-shrink: 0;
+    font-size: 24px;
+    color: var(--text-secondary);
+
+    transition: color 180ms ease;
 }
+
+/* 文字預設隱藏 */
+.sidebar-label {
+    white-space: nowrap;
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(-4px);
+
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease,
+        color 180ms ease;
+}
+
+/* sidebar 展開時文字才出現 */
+.sidebar:hover .sidebar-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* hover 效果 */
+.sidebar-object:hover {
+    background-color: var(--bg-surface-hover);
+    color: var(--text-primary);
+}
+
+.sidebar-object:hover .material-symbols-outlined,
+.sidebar-object:hover .sidebar-label {
+    color: var(--text-primary);
+}
+
+/* Active Page */
+.sidebar-object.active {
+    background-color: var(--accent-soft);
+    color: var(--text-primary);
+}
+
+.sidebar-object.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    bottom: 9px;
+    width: 3px;
+    border-radius: 999px;
+    background-color: var(--accent);
+}
+
+.sidebar-object.active .material-symbols-outlined,
+.sidebar-object.active .sidebar-label {
+    color: var(--text-primary);
+}
+
+/* =========================
+   User Account
+========================= */
 
 .user-account {
+
     margin-top: auto;
-    padding: 12px 10px;
-    margin-left: -10px;
+    margin-right: -4px;
+    margin-bottom: -4px;
+    margin-left: -4px;
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease;
+}
+
+.sidebar:hover .user-account {
+    background-color: var(--bg-surface);
+    border-color: var(--border-soft);
 }
 
 .user-profile {
     display: flex;
     align-items: center;
-    color: rgb(48, 54, 61);
 }
 
 .user-profile img {
+    object-fit: cover;
     width: 42px;
+    height: 42px;
     border-radius: 50%;
     border: 2px solid #cec8c8;
 }
 
+.user-detail {
+    margin-left: 16px;
+    white-space: nowrap;
+}
+
 .user-profile h3 {
+    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
+
+    opacity: 0;
+    transform: translateX(-4px);
+
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease;
 }
 
-.user-profile span {
-    font-size: 0.775rem;
-    font-weight: 600;
+.sidebar:hover .user-profile h3 {
+    opacity: 1;
+    transform: translateX(0);
 }
 
-.sidebar:hover .user-account {
-    background: #fff;
-    border-radius: 4px;
+main {
+    margin-left: 80px;
+    padding: 24px;
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease;
+}
+
+.sidebar:hover~main {
+    margin-left: 240px;
 }
