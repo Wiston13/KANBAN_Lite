@@ -1,0 +1,70 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(15, 17, 23);
+    min-height: 100vh;
+}
+
+
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(22, 27, 34);
+    padding: 20px 15px;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    /* 防止文字溢出 */
+    overflow: hidden;
+    border-right: 1px solid rgb(48, 54, 61);
+    z-index: 100;
+}
+
+.sidebar:hover {
+    width: 240px;
+}
+
+.sidebar h2,
+.sidebar span {
+    color: azure;
+    /* 強制不換行 */
+    white-space: nowrap;
+    /* 預設透明度為0 */
+    opacity: 0;
+    transition: opacity 200ms;
+}
+
+.sidebar:hover h2,
+.sidebar:hover span {
+    opacity: 1;
+}
+
+.sidebar-links {
+    list-style: none;
+    margin-top: 30px;
+}
+
+.sidebar-links li {
+    margin-bottom: 15px;
+}
+
+.sidebar-object {
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    transition: bavkground 0.2s;
+}
+
+.sidebar-object:hover {
+    /* 滑過選項時有微光 */
+    background-color: rgba(255, 255, 255, 0.1);
+}
