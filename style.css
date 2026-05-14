@@ -19,7 +19,7 @@ body {
     width: 80px;
     display: flex;
     flex-direction: column;
-    background-color: rgb(22, 27, 34);
+    background-color: rgb();
     padding: 20px 15px;
     transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
     /* 防止文字溢出 */
@@ -67,4 +67,37 @@ body {
 .sidebar-object:hover {
     /* 滑過選項時有微光 */
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-account {
+    margin-top: auto;
+    padding: 12px 10px;
+    margin-left: -10px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    color: rgb(48, 54, 61);
+}
+
+.user-profile img {
+    width: 42px;
+    border-radius: 50%;
+    border: 2px solid #cec8c8;
+}
+
+.user-profile h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.user-profile span {
+    font-size: 0.775rem;
+    font-weight: 600;
+}
+
+.sidebar:hover .user-account {
+    background: #fff;
+    border-radius: 4px;
 }
