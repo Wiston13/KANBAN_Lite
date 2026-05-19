@@ -20,27 +20,27 @@
         <ul class="sidebar-links">
 
             <li>
-                <a href="#" class="sidebar-object active" page-section="page-dashboard">
+                <a href="#" class="sidebar-object active" data-page-section="page-dashboard">
                     <span class="material-symbols-outlined">
                         dashboard
                     </span>
-                    <span class="sidebar-label">Dashboard</span>
+                    <span class="sidebar-label">總覽</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="sidebar-object" page-section="page-myBoard">
+                <a href="#" class="sidebar-object" data-page-section="page-my-board">
                     <span class="material-symbols-outlined">
                         note_stack
                     </span>
-                    <span class="sidebar-label">My Board</span>
+                    <span class="sidebar-label">我的看板</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="sidebar-object" page-section="page-settings">
+                <a href="#" class="sidebar-object" data-page-section="page-settings">
                     <span class="material-symbols-outlined">
                         settings
                     </span>
-                    <span class="sidebar-label">Settings</span>
+                    <span class="sidebar-label">設定</span>
                 </a>
             </li>
         </ul>
@@ -58,21 +58,76 @@
     <main class="main-content">
 
         <section class="page-section active" id="page-dashboard">
-            <h1>Dashboard</h1>
+            <h1>總覽</h1>
         </section>
 
-        <section class="page-section" id="page-myBoard">
-            <h1>My Board</h1>
+        <section class="page-section" id="page-my-board">
+            <header class="board-header">
+                <h1>我的看板</h1>
+                <button id="add-task-btn" class="add-task-btn">
+                    <span class="material-symbols-outlined">add</span>
+                    <span>增加任務</span>
+                </button>
+            </header>
+            <div class="my-board-main">
+                <article class="task-column">
+                    <h2>To Do</h2>
+                    <div class="task-list">
+                        <div class="task-card">progress 1</div>
+                        <div class="task-card">progress 2</div>
+                        <div class="task-card">progress 3</div>
+                        <div class="task-card">progress 4</div>
+                        <div class="task-card">progress 5</div>
+                        <div class="task-card">progress 5</div>
+                        <div class="task-card">progress 5</div>
+                        <div class="task-card">progress 5</div>
+                        <div class="task-card">progress 5</div>
+                        <div class="task-card">progress 5</div>
+                        <div class="task-card">progress 5</div>
+                    </div>
+                </article>
+                <article class="task-column">
+                    <h2>In Progress</h2>
+                    <div class="task-list">
+                        <div class="task-card">progress 1</div>
+                        <div class="task-card">progress 2</div>
+                        <div class="task-card">progress 3</div>
+                    </div>
+                </article>
+                <article class="task-column">
+                    <h2>Done</h2>
+                    <div class="task-list">
+                        <div class="task-card">progress 1</div>
+                        <div class="task-card">progress 2</div>
+                    </div>
+                </article>
+            </div>
         </section>
 
         <section class="page-section" id="page-settings">
-            <h1>Settings</h1>
+            <h1>設定</h1>
         </section>
 
     </main>
 
 
     <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         const sidebarLinks = document.querySelectorAll('.sidebar-object');
         const pageSections = document.querySelectorAll('.page-section');
 
@@ -86,7 +141,7 @@
 
                 // Add active class to the clicked link and corresponding section
                 link.classList.add('active');
-                const targetSection = document.querySelector(`#${link.getAttribute('page-section')}`);
+                const targetSection = document.querySelector(`#${link.dataset.pageSection}`);
                 if (targetSection) {
                     targetSection.classList.add('active');
                 }
