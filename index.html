@@ -159,16 +159,24 @@
                 id: 2,
                 title: "明天要帶狗狗去散步",
                 content: "明天天氣真好，狗要餵我",
-                priority: "easy",
+                priority: "low",
                 tag: "play",
-                status: "todo"
+                status: "done"
             },
             {
                 id: 3,
                 title: "後天狗狗要帶我去散步",
                 content: "後天天氣真好，我要餵狗",
-                priority: "normal",
-                tag: "paly",
+                priority: "medium",
+                tag: "play",
+                status: "inprogress"
+            },
+            {
+                id: 4,
+                title: "明天要帶狗狗去散步",
+                content: "明天天氣真好，狗要餵我",
+                priority: "low",
+                tag: "play",
                 status: "todo"
             }
         ];
@@ -179,11 +187,11 @@
             content: "今天天氣真好，我要餵狗",
             priority: "high",
             tag: "good",
-            status: "todo"
+            status: "done"
         };
 
         $("#add-task-btn").on("click", function () {
-            $("#todo-list").append(createTaskCard(task));
+            $("#" + task.status + "-list").append(createTaskCard(task));
         });
 
         function createTaskCard(task) {
@@ -208,9 +216,12 @@
 
 
         function renderTasks() {
-            // 清空三欄
-            // 根據 status 把 task 放進 To Do / In Progress / Done
+            $(".task-list").empty();
+            $.each(tasks, function (index, element) {
+                $("#" + element.status + "-list").append(createTaskCard(element));
+            })
         }
+        renderTasks();
 
 
     </script>
