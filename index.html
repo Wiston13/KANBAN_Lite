@@ -76,122 +76,23 @@
             <div class="my-board-main">
                 <article class="task-column">
                     <h2>To Do</h2>
-                    <div class="task-list">
-
-                        <div class="task-card">
-
-                            <div class="task-card-title">
-                                明天要帶狗狗去散步
-                            </div>
-                            <div class="task-card-content">
-                                今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗
-                            </div>
-                            <div class="task-card-priority">
-                                High
-                            </div>
-                            <div class="task-card-tags">
-                                <span class="task-card-tag">UI</span>
-                                <span class="task-card-tag">Frontend</span>
-                                <span class="task-card-tag">Bug</span>
-                            </div>
-
-                        </div>
-
-                        <div class="task-card">
-
-                            <div class="task-card-title">
-                                明天要帶狗狗去散步
-                            </div>
-                            <div class="task-card-content">
-                                今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗
-                            </div>
-                            <div class="task-card-priority">
-                                High
-                            </div>
-                            <div class="task-card-tags">
-                                <span class="task-card-tag">UI</span>
-                                <span class="task-card-tag">Frontend</span>
-                                <span class="task-card-tag">Bug</span>
-                            </div>
-
-                        </div>
-
-                        <div class="task-card">
-
-                            <div class="task-card-title">
-                                明天要帶狗狗去散步
-                            </div>
-                            <div class="task-card-content">
-                                今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗
-                            </div>
-                            <div class="task-card-priority">
-                                High
-                            </div>
-                            <div class="task-card-tags">
-                                <span class="task-card-tag">UI</span>
-                                <span class="task-card-tag">Frontend</span>
-                                <span class="task-card-tag">Bug</span>
-                            </div>
-
-                        </div>
-
-                        <div class="task-card">progress 2</div>
-                        <div class="task-card">progress 2</div>
-                        <div class="task-card">progress 2</div>
-                        <div class="task-card">progress 2</div>
+                    <div class="task-list" id="todo-list">
 
 
                     </div>
                 </article>
                 <article class="task-column">
                     <h2>In Progress</h2>
-                    <div class="task-list">
-                        <div class="task-card">
+                    <div class="task-list" id="inprogress-list">
 
-                            <div class="task-card-title">
-                                明天要帶狗狗去散步
-                            </div>
-                            <div class="task-card-content">
-                                今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗
-                            </div>
-                            <div class="task-card-priority">
-                                High
-                            </div>
-                            <div class="task-card-tags">
-                                <span class="task-card-tag">UI</span>
-                                <span class="task-card-tag">Frontend</span>
-                                <span class="task-card-tag">Bug</span>
-                            </div>
 
-                        </div>
-                        <div class="task-card">progress 1</div>
-                        <div class="task-card">progress 2</div>
-                        <div class="task-card">progress 3</div>
                     </div>
                 </article>
                 <article class="task-column">
                     <h2>Done</h2>
-                    <div class="task-list">
-                        <div class="task-card">
+                    <div class="task-list" id="done-list">
 
-                            <div class="task-card-title">
-                                明天要帶狗狗去散步
-                            </div>
-                            <div class="task-card-content">
-                                今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗 今天天氣真好 我要餵狗
-                            </div>
-                            <div class="task-card-priority">
-                                High
-                            </div>
-                            <div class="task-card-tags">
-                                <span class="task-card-tag">UI</span>
-                                <span class="task-card-tag">Frontend</span>
-                                <span class="task-card-tag">Bug</span>
-                            </div>
 
-                        </div>
-                        <div class="task-card">progress 1</div>
-                        <div class="task-card">progress 2</div>
                     </div>
                 </article>
             </div>
@@ -222,9 +123,6 @@
             })
 
 
-
-
-
         })
 
         //原生JS寫法
@@ -248,24 +146,71 @@
         //     });
         // });
 
+        let tasks = [
+            {
+                id: 1,
+                title: "今天要帶狗狗去散步",
+                content: "今天天氣真好，我要餵狗",
+                priority: "high",
+                tag: "good",
+                status: "todo"
+            },
+            {
+                id: 2,
+                title: "明天要帶狗狗去散步",
+                content: "明天天氣真好，狗要餵我",
+                priority: "easy",
+                tag: "play",
+                status: "todo"
+            },
+            {
+                id: 3,
+                title: "後天狗狗要帶我去散步",
+                content: "後天天氣真好，我要餵狗",
+                priority: "normal",
+                tag: "paly",
+                status: "todo"
+            }
+        ];
+
+        let task = {
+            id: 1,
+            title: "今天要帶狗狗去散步",
+            content: "今天天氣真好，我要餵狗",
+            priority: "high",
+            tag: "good",
+            status: "todo"
+        };
+
+        $("#add-task-btn").on("click", function () {
+            $("#todo-list").append(createTaskCard(task));
+        });
+
+        function createTaskCard(task) {
+            return `
+                    <div class="task-card" data-id="${task.id}">
+                        <div class="task-card-title">
+                            ${task.title}
+                        </div>
+                        <div class="task-card-content">
+                            ${task.content}
+                        </div>
+                        <div class="task-card-priority">
+                            ${task.priority}
+                        </div>
+                        <div class="task-card-tags">
+                            <span class="task-card-tag">${task.tag}</span>
+                        </div>
+                    </div>
+                `;
+        }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        function renderTasks() {
+            // 清空三欄
+            // 根據 status 把 task 放進 To Do / In Progress / Done
+        }
 
 
     </script>
