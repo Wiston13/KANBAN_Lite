@@ -254,7 +254,7 @@ main主體
 
 main {
     margin-left: 80px;
-    padding: 12px;
+    padding: 16px 30px;
     min-height: 100vh;
     /* transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1); */
 }
@@ -306,8 +306,9 @@ Board Main
     gap: 24px;
     align-items: stretch;
 
-    height: 90vh;
+    height: 86vh;
     padding: 20px;
+    margin-top: 20px;
 
     background-color: rgba(26, 32, 48, 0.55);
     border: 1px solid var(--border-soft);
@@ -317,6 +318,10 @@ Board Main
         inset 0 1px 0 rgba(255, 255, 255, 0.03),
         0 20px 50px rgba(0, 0, 0, 0.18);
 }
+
+/* ======
+任務欄
+====== */
 
 .task-column {
     flex: 1;
@@ -346,7 +351,7 @@ Board Main
     padding-bottom: 14px;
 
     color: var(--text-primary);
-    font-size: 1.05rem;
+    font-size: 1.25rem;
     font-weight: 650;
     letter-spacing: 0.02em;
 
@@ -358,19 +363,32 @@ Board Main
 
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
 
     overflow-y: auto;
-    padding-right: 4px;
+    padding: 2px 10px;
+
 }
+
+/* =======
+任務卡
+======= */
 
 .task-card {
     width: 100%;
-    min-height: 92px;
+    min-height: 140px;
     padding: 16px;
 
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 240px 1fr auto;
+    grid-template-rows: auto 2.7em auto;
+    grid-template-areas:
+        "title . priority"
+        "content . ."
+        ". . tag";
+
+    column-gap: 12px;
+    row-gap: 8px;
 
     color: var(--text-secondary);
     font-size: 0.95rem;
@@ -393,6 +411,7 @@ Board Main
         box-shadow 180ms ease;
 }
 
+
 .task-card:hover {
     transform: translateY(-2px);
 
@@ -403,6 +422,77 @@ Board Main
     box-shadow:
         0 14px 28px rgba(0, 0, 0, 0.22),
         inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+
+.task-card-title {
+    grid-area: title;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+
+}
+
+.task-card-content {
+    grid-area: content;
+
+    width: 100%;
+    min-width: 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+
+}
+
+.task-card-priority {
+    grid-area: priority;
+
+    justify-self: end;
+
+    padding: 4px 8px;
+    border-radius: 999px;
+
+    color: var(--danger);
+    background-color: rgba(255, 107, 107, 0.14);
+
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.task-card-tags {
+    grid-area: tag;
+
+    display: flex;
+    justify-content: flex-end;
+    align-self: end;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.task-card-tag {
+    padding: 4px 8px;
+    border-radius: 999px;
+
+    color: var(--accent-hover);
+    background-color: var(--accent-soft);
+
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 /* =======================
@@ -436,7 +526,7 @@ task-list 滾動條
 =============== */
 
 .task-list::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .task-list::-webkit-scrollbar-thumb {
