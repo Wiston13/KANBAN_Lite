@@ -109,35 +109,39 @@
                 <header>
                     <h2 style="display: inline;">新增任務</h2>
                 </header>
-                <div class="task-modal-title">
-                    <input type="text" id="task-title-input" maxlength="30" value="標題">
-                </div>
-                <div>
-                    優先度:
-                    <select id="task-priority-input">
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
-                    </select>
-                    標籤:
-                    <input type="text" id="task-tag-input" maxlength="15">
-                    狀態:
-                    <select id="task-status-input">
-                        <option value="todo">To Do</option>
-                        <option value="inprogress">In Progress</option>
-                        <option value="done">Done</option>
-                    </select>
-                </div>
-                <div>
-                    描述:
-                    <br>
-                    <textarea id="task-description-input" maxlength="120" value="請輸入你想要新增的內容"></textarea>
-                </div>
+                <form id="task-form">
+                    <div class="task-modal-title">
+                        <input type="text" id="task-title-input" maxlength="30" placeholder="請輸入任務標題" required>
+                    </div>
+                    <div>
+                        <label for="task-priority-input">優先度:</label>
+                        <select id="task-priority-input">
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
 
-                <div class="modal-actions">
-                    <button id="save-task-btn">儲存</button>
-                    <button id="close-modal-btn">取消</button>
-                </div>
+                        <label for="task-tag-input">標籤:</label>
+                        <input type="text" id="task-tag-input" maxlength="15">
+
+                        <label for="task-status-input">狀態:</label>
+                        <select id="task-status-input">
+                            <option value="todo">To Do</option>
+                            <option value="inprogress">In Progress</option>
+                            <option value="done">Done</option>
+                        </select>
+                    </div>
+                    <div>
+                        描述:
+                        <br>
+                        <textarea id="task-description-input" maxlength="120" placeholder="請輸入任務描述" required></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" id="save-task-btn">儲存</button>
+                        <button type="button" id="close-modal-btn">取消</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -223,14 +227,6 @@
             }
         ];
 
-        let task = {
-            id: 1,
-            title: "今天要帶狗狗去散步",
-            content: "今天天氣真好，我要餵狗",
-            priority: "high",
-            tag: "good",
-            status: "done"
-        };
 
         $("#add-task-btn").on("click", function () {
             // $("#" + task.status + "-list").append(createTaskCard(task));
@@ -238,14 +234,47 @@
         });
 
         $("#close-modal-btn").on("click", function () {
+            resetTaskForm();
             $(".task-modal").removeClass("active");
         })
 
         $("#task-modal").on("click", function (e) {
             if (e.target === this) {
+                resetTaskForm();
                 $("#task-modal").removeClass("active");
             }
         });
+
+        function resetTaskForm() {
+            $("#task-title-input").val("");
+            $("#task-description-input").val("");
+            $("#task-tag-input").val("");
+            $("#task-priority-input").val("medium");
+            $("#task-status-input").val("todo");
+        }
+
+        $("#task-form").on("submit", function (e) {
+            e.preventDefault();
+            let task = {
+                "id": new Date().getTime(),
+                "title": $("#task-title-input").val().trim(),
+                "content": $("#task-description-input").val().trim(),
+                "priority": $("#task-priority-input").val(),
+                "tag": $("#task-tag-input").val().trim(),
+                "status": $("#task-status-input").val()
+            };
+
+            if (task.tag === "") {
+                task.tag = "general";
+            }
+
+            tasks.push(task);
+            renderTasks();
+
+            resetTaskForm();
+            $(".task-modal").removeClass("active");
+        })
+
 
         function createTaskCard(task) {
             return `
