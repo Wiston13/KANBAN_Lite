@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KANBAN</title>
+    <title>KANBAN Lite</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -17,7 +17,7 @@
     <!-- 側邊攔 -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h2>KANBAN</h2>
+            <h2>KANBAN Lite</h2>
         </div>
         <hr>
         <ul class="sidebar-links">
@@ -101,6 +101,48 @@
         <section class="page-section" id="page-settings">
             <h1>設定</h1>
         </section>
+
+
+        <!-- 新增任務頁 -->
+        <div class="task-modal" id="task-modal">
+            <div class="task-modal-content">
+                <header>
+                    <h2 style="display: inline;">新增任務</h2>
+                </header>
+                <div class="task-modal-title">
+                    <input type="text" id="task-title-input" maxlength="30" value="標題">
+                </div>
+                <div>
+                    優先度:
+                    <select id="task-priority-input">
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                    標籤:
+                    <input type="text" id="task-tag-input" maxlength="15">
+                    狀態:
+                    <select id="task-status-input">
+                        <option value="todo">To Do</option>
+                        <option value="inprogress">In Progress</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div>
+                    描述:
+                    <br>
+                    <textarea id="task-description-input" maxlength="120" value="請輸入你想要新增的內容"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="save-task-btn">儲存</button>
+                    <button id="close-modal-btn">取消</button>
+                </div>
+            </div>
+        </div>
+
+
+
 
     </main>
 
@@ -191,7 +233,18 @@
         };
 
         $("#add-task-btn").on("click", function () {
-            $("#" + task.status + "-list").append(createTaskCard(task));
+            // $("#" + task.status + "-list").append(createTaskCard(task));
+            $(".task-modal").addClass("active");
+        });
+
+        $("#close-modal-btn").on("click", function () {
+            $(".task-modal").removeClass("active");
+        })
+
+        $("#task-modal").on("click", function (e) {
+            if (e.target === this) {
+                $("#task-modal").removeClass("active");
+            }
         });
 
         function createTaskCard(task) {

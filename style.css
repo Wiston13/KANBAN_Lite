@@ -605,3 +605,32 @@ task-list 滾動條
 .add-task-btn .material-symbols-outlined {
     font-size: 20px;
 }
+
+/* =======
+新增任務頁
+======= */
+
+.task-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+
+    background-color: rgba(0, 0, 0, 0.55);
+
+    justify-content: center;
+    align-items: center;
+}
+
+.task-modal.active {
+    display: flex;
+}
+
+.task-modal-content {
+    width: 600px;
+    padding: 24px;
+
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+}
