@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <script src="https://code.jquery.com/jquery-4.0.0.js"
-        integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 </head>
 
@@ -171,26 +170,6 @@
 
         })
 
-        //原生JS寫法
-        // const sidebarLinks = document.querySelectorAll('.sidebar-object');
-        // const pageSections = document.querySelectorAll('.page-section');
-
-        // sidebarLinks.forEach(link => {
-        //     link.addEventListener('click', (e) => {
-        //         e.preventDefault();
-
-        //         // Remove active class from all links and sections
-        //         sidebarLinks.forEach(link => link.classList.remove('active'));
-        //         pageSections.forEach(section => section.classList.remove('active'));
-
-        //         // Add active class to the clicked link and corresponding section
-        //         link.classList.add('active');
-        //         const targetSection = document.querySelector(`#${link.dataset.pageSection}`);
-        //         if (targetSection) {
-        //             targetSection.classList.add('active');
-        //         }
-        //     });
-        // });
 
         let tasks = [
             {
@@ -278,7 +257,7 @@
 
         function createTaskCard(task) {
             return `
-                    <div class="task-card" data-id="${task.id}">
+                    <div class="task-card" data-id="${task.id}" draggable="true">
                         <div class="task-card-title">
                             ${task.title}
                         </div>
@@ -304,6 +283,47 @@
             })
         }
         renderTasks();
+
+        // Task Cards Drag & Drop
+        $(document).on("dragstart", ".task-card", function (e) {
+            const taskId = $(this).data("id");
+
+            e.originalEvent.dataTransfer.setData("text/plain", taskId);
+            $(this).addClass("dragging");
+        });
+        $(document).on("dragend", ".task-card", function () {
+            $(this).removeClass("dragging");
+        });
+        $(document).on("dragover", ".task-list", function (e) {
+            e.preventDefault();
+        });
+        $(document).on("dragenter", ".task-list", function (e) {
+            e.preventDefault();
+            $(this).addClass("drag-over");
+        });
+
+        $(document).on("dragleave", ".task-list", function () {
+            $(this).removeClass("drag-over");
+        });
+        $(document).on("drop", ".task-list", function (e) {
+            e.preventDefault();
+            $(this).removeClass("drag-over");
+
+            const taskId = Number(e.originalEvent.dataTransfer.getData("text/plain"));
+            const targetStatus = this.id.replace("-list", "");
+
+            const task = tasks.find(function (task) {
+                return task.id === taskId;
+            });
+
+            if (!task) {
+                return;
+            }
+
+            task.status = targetStatus;
+            renderTasks();
+        });
+
 
 
     </script>
