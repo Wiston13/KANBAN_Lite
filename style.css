@@ -861,7 +861,6 @@ main {
     margin-top: var(--space-1);
 
     display: flex;
-    /* justify-content: space-between; */
     align-items: center;
     gap: var(--space-3);
 }
