@@ -861,10 +861,18 @@ main {
     margin-top: var(--space-1);
 
     display: flex;
-    justify-content: flex-end;
+    /* justify-content: space-between; */
+    align-items: center;
     gap: var(--space-3);
 }
 
+.modal-actions-main {
+    margin-left: auto;
+    display: flex;
+    gap: var(--space-3);
+}
+
+#delete-task-btn,
 #save-task-btn,
 #close-modal-btn {
     width: auto;
@@ -898,10 +906,12 @@ main {
     border-color: var(--color-border-accent-hover);
 }
 
+#delete-task-btn:active,
 #save-task-btn:active,
 #close-modal-btn:active {
     transform: translateY(0);
 }
+
 
 #close-modal-btn {
     color: var(--color-text-secondary);
@@ -909,10 +919,137 @@ main {
     border: 1px solid var(--color-border-soft);
 }
 
+#delete-task-btn {
+    color: var(--color-danger);
+    background-color: transparent;
+    border: 1px solid var(--color-border-soft);
+}
+
+
 #close-modal-btn:hover {
     color: var(--color-text-primary);
     background-color: var(--color-bg-surface-hover);
     border-color: var(--color-border-strong);
+}
+
+#delete-task-btn:hover {
+    background-color: var(--color-danger-soft);
+    border-color: var(--color-border-strong);
+}
+
+
+/* =========================================================
+   Delete Task Popover
+========================================================= */
+
+#delete-task-popover {
+    width: min(420px, calc(100vw - var(--space-8)));
+    padding: var(--space-6);
+
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-surface);
+
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-2xl);
+
+    box-shadow: var(--shadow-modal);
+}
+
+#delete-task-popover:popover-open {
+    position: fixed;
+    inset: unset;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    margin: 0;
+
+    animation: delete-popover-fade-in var(--duration-normal) var(--ease-standard);
+}
+
+#delete-task-popover::backdrop {
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+}
+
+@keyframes delete-popover-fade-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -46%) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+#delete-task-popover h2 {
+    margin-bottom: var(--space-6);
+
+    text-align: center;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-card-title);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-normal);
+}
+
+.popover-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+#popover-delete-task-btn,
+#close-popover-btn {
+    padding: 10px 18px;
+
+    border-radius: var(--radius-md);
+
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        transform var(--duration-fast) var(--ease-standard),
+        border-color var(--duration-fast) var(--ease-standard),
+        background-color var(--duration-fast) var(--ease-standard),
+        color var(--duration-fast) var(--ease-standard);
+}
+
+#popover-delete-task-btn {
+    color: var(--color-danger);
+    background-color: var(--color-danger-soft);
+    border: 1px solid var(--color-danger);
+}
+
+#popover-delete-task-btn:hover {
+    transform: translateY(-1px);
+
+    color: var(--color-text-inverse);
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+#close-popover-btn {
+    color: var(--color-text-secondary);
+    background-color: transparent;
+    border: 1px solid var(--color-border-soft);
+}
+
+#close-popover-btn:hover {
+    transform: translateY(-1px);
+
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-surface-hover);
+    border-color: var(--color-border-strong);
+}
+
+#popover-delete-task-btn:active,
+#close-popover-btn:active {
+    transform: translateY(0);
 }
 
 /* =========================================================
