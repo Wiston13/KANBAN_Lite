@@ -105,34 +105,43 @@
         <!-- 新增任務頁 -->
         <div class="task-modal" id="task-modal">
             <div class="task-modal-content">
-                <header>
-                    <h2 style="display: inline;">新增任務</h2>
+                <header class="task-modal-header">
+                    <h2>新增任務</h2>
                 </header>
-                <form id="task-form">
-                    <div class="task-modal-title">
+
+                <form id="task-form" class="task-form">
+                    <div class="form-field task-modal-title">
+                        <label for="task-title-input">標題</label>
                         <input type="text" id="task-title-input" maxlength="30" placeholder="請輸入任務標題" required>
                     </div>
-                    <div>
-                        <label for="task-priority-input">優先度:</label>
-                        <select id="task-priority-input">
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
 
-                        <label for="task-tag-input">標籤:</label>
-                        <input type="text" id="task-tag-input" maxlength="15">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="task-priority-input">優先度</label>
+                            <select id="task-priority-input">
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
 
-                        <label for="task-status-input">狀態:</label>
-                        <select id="task-status-input">
-                            <option value="todo">To Do</option>
-                            <option value="inprogress">In Progress</option>
-                            <option value="done">Done</option>
-                        </select>
+                        <div class="form-field">
+                            <label for="task-tag-input">標籤</label>
+                            <input type="text" id="task-tag-input" maxlength="15" placeholder="general">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="task-status-input">狀態</label>
+                            <select id="task-status-input">
+                                <option value="todo">To Do</option>
+                                <option value="inprogress">In Progress</option>
+                                <option value="done">Done</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        描述:
-                        <br>
+
+                    <div class="form-field">
+                        <label for="task-description-input">描述</label>
                         <textarea id="task-description-input" maxlength="120" placeholder="請輸入任務描述" required></textarea>
                     </div>
 
@@ -264,7 +273,7 @@
                         <div class="task-card-content">
                             ${task.content}
                         </div>
-                        <div class="task-card-priority">
+                        <div class="task-card-priority priority-${task.priority}">
                             ${task.priority}
                         </div>
                         <div class="task-card-tags">
