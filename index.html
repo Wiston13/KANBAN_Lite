@@ -57,12 +57,16 @@
         </div>
     </aside>
 
+
+    <!-- 主要內容 -->
     <main class="main-content">
 
+        <!-- 總覽 -->
         <section class="page-section" id="page-dashboard">
             <h1>總覽</h1>
         </section>
 
+        <!-- 我的看板 -->
         <section class="page-section active" id="page-my-board">
             <header class="board-header">
                 <h1>我的看板</h1>
@@ -97,6 +101,7 @@
             </div>
         </section>
 
+        <!-- 設定 -->
         <section class="page-section" id="page-settings">
             <h1>設定</h1>
         </section>
@@ -106,7 +111,7 @@
         <div class="task-modal" id="task-modal">
             <div class="task-modal-content">
                 <header class="task-modal-header">
-                    <h2>新增任務</h2>
+                    <h2></h2>
                 </header>
 
                 <form id="task-form" class="task-form">
@@ -215,25 +220,10 @@
             }
         ];
 
-
-        $("#add-task-btn").on("click", function () {
-            // $("#" + task.status + "-list").append(createTaskCard(task));
-            $(".task-modal").addClass("active");
-        });
-
-        $("#close-modal-btn").on("click", function () {
-            resetTaskForm();
-            $(".task-modal").removeClass("active");
-        })
-
-        $("#task-modal").on("click", function (e) {
-            if (e.target === this) {
-                resetTaskForm();
-                $("#task-modal").removeClass("active");
-            }
-        });
-
+        let editingTaskId = -1;
         function resetTaskForm() {
+            editingTaskId = -1;
+            $(".task-modal-header h2").text("新增任務");
             $("#task-title-input").val("");
             $("#task-description-input").val("");
             $("#task-tag-input").val("");
@@ -241,28 +231,69 @@
             $("#task-status-input").val("todo");
         }
 
+        function closeAndResetTaskModal() {
+            resetTaskForm();
+            $(".task-modal").removeClass("active");
+        }
+
+        $("#add-task-btn").on("click", () => {
+            resetTaskForm();
+            $(".task-modal").addClass("active");
+        });
+
         $("#task-form").on("submit", function (e) {
             e.preventDefault();
             let task = {
-                "id": new Date().getTime(),
+                "id": (editingTaskId < 0) ? new Date().getTime() : editingTaskId,
                 "title": $("#task-title-input").val().trim(),
                 "content": $("#task-description-input").val().trim(),
                 "priority": $("#task-priority-input").val(),
                 "tag": $("#task-tag-input").val().trim(),
                 "status": $("#task-status-input").val()
             };
-
             if (task.tag === "") {
                 task.tag = "general";
             }
-
-            tasks.push(task);
+            if (editingTaskId < 0) {
+                tasks.push(task);
+            } else {
+                let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
+                if (tasksIndex == -1) {
+                    alert("發生錯誤，請重試一次!");
+                    return;
+                }
+                tasks.splice(tasksIndex, 1, task);
+            }
             renderTasks();
-
-            resetTaskForm();
-            $(".task-modal").removeClass("active");
+            closeAndResetTaskModal();
         })
 
+        $("#task-modal").on("click", function (e) {
+            if (e.target === this) {
+                closeAndResetTaskModal();
+            }
+        });
+
+        $("#close-modal-btn").on("click", () => {
+            closeAndResetTaskModal();
+        })
+
+        $(document).on("click", ".task-card", function () {
+            const taskId = Number($(this).data("id"));
+            const task = tasks.find(item => item.id === taskId);
+            if (!task) {
+                return;
+            }
+            editingTaskId = taskId;
+            $("#task-title-input").val(task.title);
+            $("#task-description-input").val(task.content);
+            $("#task-tag-input").val(task.tag);
+            $("#task-priority-input").val(task.priority);
+            $("#task-status-input").val(task.status);
+
+            $(".task-modal-header h2").text("編輯任務");
+            $(".task-modal").addClass("active");
+        })
 
         function createTaskCard(task) {
             return `
@@ -282,7 +313,6 @@
                     </div>
                 `;
         }
-
 
 
         function renderTasks() {
