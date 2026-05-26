@@ -286,28 +286,28 @@
 
         // Task Cards Drag & Drop
         $(document).on("dragstart", ".task-card", function (e) {
+
             const taskId = $(this).data("id");
 
             e.originalEvent.dataTransfer.setData("text/plain", taskId);
             $(this).addClass("dragging");
         });
+
         $(document).on("dragend", ".task-card", function () {
             $(this).removeClass("dragging");
+            $(".task-list").removeClass("drag-over");
         });
+
         $(document).on("dragover", ".task-list", function (e) {
             e.preventDefault();
-        });
-        $(document).on("dragenter", ".task-list", function (e) {
-            e.preventDefault();
+
+            $(".task-list").removeClass("drag-over");
             $(this).addClass("drag-over");
         });
 
-        $(document).on("dragleave", ".task-list", function () {
-            $(this).removeClass("drag-over");
-        });
         $(document).on("drop", ".task-list", function (e) {
             e.preventDefault();
-            $(this).removeClass("drag-over");
+            $(".task-list").removeClass("drag-over");
 
             const taskId = Number(e.originalEvent.dataTransfer.getData("text/plain"));
             const targetStatus = this.id.replace("-list", "");
@@ -323,6 +323,21 @@
             task.status = targetStatus;
             renderTasks();
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
