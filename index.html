@@ -229,12 +229,17 @@
             }
         ];
 
-        // function saveTasksToLocalStorage(tasks) {
-        //     localStorage.setItem("tasks", JSON.stringify(tasks));
-        // }
-        // function loadTasksFromLocalStorage() {
-        //     return JSON.parse(localStorage.getItem("tasks"));
-        // }
+        function saveTasksToLocalStorage(tasks) {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+        function loadTasksFromLocalStorage() {
+            return JSON.parse(localStorage.getItem("tasks"));
+        }
+
+        if (loadTasksFromLocalStorage() === null) {
+            saveTasksToLocalStorage(tasks);
+        }
+
 
         let editingTaskId = -1;
         function resetTaskForm() {
@@ -260,7 +265,7 @@
 
         $("#task-form").on("submit", function (e) {
             e.preventDefault();
-
+            let tasks = loadTasksFromLocalStorage();
             let task = {
                 "id": (editingTaskId < 0) ? new Date().getTime() : editingTaskId,
                 "title": $("#task-title-input").val().trim(),
@@ -283,7 +288,7 @@
                 }
                 tasks.splice(tasksIndex, 1, task);
             }
-
+            saveTasksToLocalStorage(tasks);
             renderTasks();
             closeAndResetTaskModal();
         })
@@ -311,12 +316,14 @@
             if (editingTaskId < 0) {
                 return;
             }
+            let tasks = loadTasksFromLocalStorage();
             let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
             if (tasksIndex == -1) {
                 alert("發生錯誤，請重試一次!");
                 return;
             }
             tasks.splice(tasksIndex, 1);
+            saveTasksToLocalStorage(tasks);
             renderTasks();
 
             deletePopover.hidePopover();
@@ -329,6 +336,7 @@
 
         $(document).on("click", ".task-card", function () {
             const taskId = Number($(this).data("id"));
+            let tasks = loadTasksFromLocalStorage();
             const task = tasks.find(item => item.id === taskId);
             if (!task) {
                 return;
@@ -367,6 +375,7 @@
 
         function renderTasks() {
             $(".task-list").empty();
+            let tasks = loadTasksFromLocalStorage();
             $.each(tasks, function (index, element) {
                 $("#" + element.status + "-list").append(createTaskCard(element));
             })
@@ -400,7 +409,7 @@
 
             const taskId = Number(e.originalEvent.dataTransfer.getData("text/plain"));
             const targetStatus = this.id.replace("-list", "");
-
+            let tasks = loadTasksFromLocalStorage();
             const task = tasks.find(function (task) {
                 return task.id === taskId;
             });
@@ -410,6 +419,7 @@
             }
 
             task.status = targetStatus;
+            saveTasksToLocalStorage(tasks);
             renderTasks();
         });
 
