@@ -405,6 +405,7 @@ main {
     padding: var(--space-4) 30px;
 }
 
+.settings-header+hr,
 .board-header+hr,
 .dashboard-header+hr {
     border: none;
@@ -962,7 +963,7 @@ main {
    Delete Task Popover
 ========================================================= */
 
-#delete-task-popover {
+#confirm-popover {
     width: min(420px, calc(100vw - var(--space-8)));
     padding: var(--space-6);
 
@@ -975,7 +976,7 @@ main {
     box-shadow: var(--shadow-modal);
 }
 
-#delete-task-popover:popover-open {
+#confirm-popover:popover-open {
     position: fixed;
     inset: unset;
     top: 50%;
@@ -987,7 +988,7 @@ main {
     animation: delete-popover-fade-in var(--duration-normal) var(--ease-standard);
 }
 
-#delete-task-popover::backdrop {
+#confirm-popover::backdrop {
     background-color: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(3px);
 }
@@ -1004,7 +1005,7 @@ main {
     }
 }
 
-#delete-task-popover h2 {
+#confirm-popover h2 {
     margin-bottom: var(--space-6);
 
     text-align: center;
@@ -1020,7 +1021,7 @@ main {
     gap: var(--space-3);
 }
 
-#popover-delete-task-btn,
+#confirm-action-btn,
 #close-popover-btn {
     padding: 10px 18px;
 
@@ -1039,13 +1040,13 @@ main {
         color var(--duration-fast) var(--ease-standard);
 }
 
-#popover-delete-task-btn {
+#confirm-action-btn {
     color: var(--color-danger);
     background-color: var(--color-danger-soft);
     border: 1px solid var(--color-danger);
 }
 
-#popover-delete-task-btn:hover {
+#confirm-action-btn:hover {
     transform: translateY(-1px);
 
     color: var(--color-text-inverse);
@@ -1067,7 +1068,7 @@ main {
     border-color: var(--color-border-strong);
 }
 
-#popover-delete-task-btn:active,
+#confirm-action-btn:active,
 #close-popover-btn:active {
     transform: translateY(0);
 }
@@ -1478,4 +1479,123 @@ main {
         font-size: 2.5rem;
         text-align: right;
     }
+}
+
+
+#page-settings {
+    flex-direction: column;
+}
+
+.settings-header {
+    min-height: 48px;
+    margin-bottom: var(--space-3);
+    padding: 0 var(--space-6);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settings-header h1 {
+    margin: 0;
+
+    color: var(--color-text-primary);
+    font-size: var(--font-size-brand);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+}
+
+.settings-main {
+    height: var(--board-height);
+    margin-top: var(--space-5);
+    padding: var(--space-5);
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--space-6);
+
+    overflow-x: auto;
+
+    background-color: rgba(26, 32, 48, 0.55);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-3xl);
+    box-shadow: var(--shadow-panel);
+}
+
+.data-manage {
+    width: min(420px, 100%);
+    padding: var(--space-5);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+
+    background-color: rgba(18, 22, 33, 0.95);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-card);
+}
+
+.data-manage h2 {
+    margin: 0;
+    padding-bottom: var(--space-3);
+
+    color: var(--color-text-primary);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-title);
+    line-height: 1.25;
+
+    border-bottom: 1px solid var(--color-border-soft);
+}
+
+.data-manage button {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+
+    border-radius: var(--radius-md);
+
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        transform var(--duration-fast) var(--ease-standard),
+        background-color var(--duration-fast) var(--ease-standard),
+        border-color var(--duration-fast) var(--ease-standard),
+        color var(--duration-fast) var(--ease-standard);
+}
+
+#clear-tasks-btn {
+    color: var(--color-danger);
+    background-color: transparent;
+    border: 1px solid var(--color-border-soft);
+}
+
+#clear-tasks-btn:hover {
+    color: var(--color-danger);
+    background-color: var(--color-danger-soft);
+    border-color: var(--color-border-strong);
+}
+
+#reset-demo-tasks-btn {
+    color: var(--color-text-inverse);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-strong));
+    border: 1px solid var(--color-border-accent);
+}
+
+#reset-demo-tasks-btn:hover {
+    background: linear-gradient(135deg, var(--color-accent-hover), var(--color-accent));
+    border-color: var(--color-border-accent-hover);
+}
+
+.data-manage button:hover {
+    transform: translateY(-1px);
+}
+
+.data-manage button:active {
+    transform: translateY(0);
 }

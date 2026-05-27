@@ -17,35 +17,131 @@ $(document).ready(() => {
 let tasks = [
     {
         id: 1,
-        title: "今天要帶狗狗去散步",
-        content: "今天天氣真好，我要餵狗",
+        title: "今晚跟王董開會",
+        content: "今晚跟王董有關於收購案的會議",
         priority: "high",
-        tag: "good",
+        tag: "meeting",
         status: "todo"
     },
     {
         id: 2,
-        title: "明天要帶狗狗去散步",
-        content: "明天天氣真好，狗要餵我",
-        priority: "low",
-        tag: "play",
-        status: "done"
-    },
-    {
-        id: 3,
-        title: "後天狗狗要帶我去散步",
-        content: "後天天氣真好，我要餵狗",
-        priority: "medium",
-        tag: "play",
+        title: "修復登入頁面 Bug",
+        content: "部分用戶反映三方登入時會出現 500 錯誤，需要緊急排查",
+        priority: "high",
+        tag: "bug",
         status: "inprogress"
     },
     {
-        id: 4,
-        title: "明天要帶狗狗去散步",
-        content: "明天天氣真好，狗要餵我",
-        priority: "low",
-        tag: "play",
+        id: 3,
+        title: "設計首頁 UI 視覺稿",
+        content: "完成第二版首頁 RWD 視覺設計，並提交給產品經理審查",
+        priority: "medium",
+        tag: "design",
         status: "todo"
+    },
+    {
+        id: 4,
+        title: "撰寫 Q3 季度行銷企劃",
+        content: "針對新功能上線擬定社群與廣告投放策略",
+        priority: "medium",
+        tag: "marketing",
+        status: "done"
+    },
+    {
+        id: 5,
+        title: "與開發團隊進行 Sprint 規劃",
+        content: "確認下一個雙週衝刺的任務分配與點數估算",
+        priority: "high",
+        tag: "meeting",
+        status: "todo"
+    },
+    {
+        id: 6,
+        title: "開發購物車結帳功能",
+        content: "實作 LINE Pay 與信用卡金流串接 API",
+        priority: "high",
+        tag: "feature",
+        status: "inprogress"
+    },
+    {
+        id: 7,
+        title: "優化資料庫查詢效能",
+        content: "針對商品搜尋頁面的 SQL 進行 Index 優化，降低延遲",
+        priority: "medium",
+        tag: "feature",
+        status: "todo"
+    },
+    {
+        id: 8,
+        title: "修正購物車數量歸零 Bug",
+        content: "使用者連續點擊減少數量時，偶爾會變成負數",
+        priority: "high",
+        tag: "bug",
+        status: "done"
+    },
+    {
+        id: 9,
+        title: "撰寫 API 規格文件",
+        content: "將使用者模組與權限控管的 API 規格更新至 Swagger",
+        priority: "low",
+        tag: "design",
+        status: "done"
+    },
+    {
+        id: 10,
+        title: "每週跨部門進度同步會",
+        content: "與營運團隊、設計團隊同步目前專案開發進度",
+        priority: "low",
+        tag: "meeting",
+        status: "todo"
+    },
+    {
+        id: 11,
+        title: "準備 A/B 測試數據報告",
+        content: "分析上週按鈕顏色調整後的轉化率變化",
+        priority: "medium",
+        tag: "marketing",
+        status: "inprogress"
+    },
+    {
+        id: 12,
+        title: "新增暗黑模式 (Dark Mode)",
+        content: "根據設計規範，實作全站切換暗黑模式的 CSS 樣式",
+        priority: "low",
+        tag: "feature",
+        status: "todo"
+    },
+    {
+        id: 13,
+        title: "處理客服回報的圖片上傳失敗",
+        content: "iOS App 用戶在上傳大於 5MB 的大頭貼時會閃退",
+        priority: "high",
+        tag: "bug",
+        status: "inprogress"
+    },
+    {
+        id: 14,
+        title: "設計使用者問卷調研",
+        content: "規劃新版介面的滿意度調查問卷題目",
+        priority: "low",
+        tag: "design",
+        status: "todo"
+    },
+    {
+        id: 15,
+        title: "K8s 叢集例行性維護",
+        content: "安排在離峰時間進行伺服器節點升級與重啟測試",
+        priority: "high",
+        tag: "feature",
+        status: "done"
+    },
+    {
+        id: 16,
+        title: "確認 KOL 合作合約內容",
+        content: "與法務確認下個月網紅業配的合作條款與授權範圍",
+        priority: "medium",
+        tag: "meeting",
+        status: "inprogress"
     }
 ];
 
@@ -174,37 +270,62 @@ $("#task-modal").on("click", function (e) {
 });
 
 // popover
-const deletePopover = $("#delete-task-popover")[0];
+const actionPopover = $("#confirm-popover")[0];
+let confirmAction = "";
 
 $("#delete-task-btn").on("click", () => {
     if (editingTaskId < 0) {
         return;
     }
-    deletePopover.showPopover();
+    $("#confirm-popover-message").text("此操作無法復原，確認要刪除此任務嗎？");
+    confirmAction = "delete-task";
+    actionPopover.showPopover();
 })
 
-$("#popover-delete-task-btn").on("click", () => {
-    if (editingTaskId < 0) {
-        return;
-    }
-    let tasks = loadTasksFromLocalStorage();
-    let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
+$("#clear-tasks-btn").on("click", () => {
+    $("#confirm-popover-message").text("確認要清除所有任務資料嗎？");
+    confirmAction = "clear-task";
+    actionPopover.showPopover();
+})
 
-    if (tasksIndex === -1) {
-        alert("發生錯誤，請重試一次!");
+$("#reset-demo-tasks-btn").on("click", () => {
+    $("#confirm-popover-message").text("確認要重置為範例資料嗎？目前資料會被覆蓋。");
+    confirmAction = "reset-task";
+    actionPopover.showPopover();
+})
+
+$("#confirm-action-btn").on("click", () => {
+    if (confirmAction === "clear-task") {
+        saveTasksToLocalStorage([]);
+    } else if (confirmAction === "reset-task") {
+        saveTasksToLocalStorage(tasks);
+    } else if (confirmAction === "delete-task") {
+        if (editingTaskId < 0) {
+            return;
+        }
+        let tasks = loadTasksFromLocalStorage();
+        let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
+
+        if (tasksIndex === -1) {
+            alert("發生錯誤，請重試一次!");
+            return;
+        }
+        tasks.splice(tasksIndex, 1);
+        saveTasksToLocalStorage(tasks);
+        closeAndResetTaskModal();
+    } else {
         return;
     }
-    tasks.splice(tasksIndex, 1);
-    saveTasksToLocalStorage(tasks);
     renderTasks();
     dashboard.renderDashboard();
 
-    deletePopover.hidePopover();
-    closeAndResetTaskModal();
+    actionPopover.hidePopover();
+    confirmAction = "";
 })
 
 $("#close-popover-btn").on("click", () => {
-    deletePopover.hidePopover();
+    actionPopover.hidePopover();
+    confirmAction = "";
 })
 
 // Task Cards Drag & Drop
@@ -330,4 +451,5 @@ const dashboard = {
         this.renderPriorityFocus();
     }
 };
+
 dashboard.renderDashboard();
