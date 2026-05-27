@@ -168,21 +168,21 @@ function renderTasks() {
 
 function createTaskCard(task) {
     return `
-                    <div class="task-card" data-id="${task.id}" draggable="true">
-                        <div class="task-card-title">
-                            ${task.title}
-                        </div>
-                        <div class="task-card-content">
-                            ${task.content}
-                        </div>
-                        <div class="task-card-priority priority-${task.priority}">
-                            ${task.priority}
-                        </div>
-                        <div class="task-card-tags">
-                            <span class="task-card-tag">${task.tag}</span>
-                        </div>
-                    </div>
-                `;
+            <div class="task-card" data-id="${task.id}" draggable="true">
+                <div class="task-card-title">
+                    ${task.title}
+                </div>
+                <div class="task-card-content">
+                    ${task.content}
+                </div>
+                <div class="task-card-priority priority-${task.priority}">
+                    ${task.priority}
+                </div>
+                <div class="task-card-tags">
+                    <span class="task-card-tag">${task.tag}</span>
+                </div>
+            </div>
+            `;
 }
 
 renderTasks();
