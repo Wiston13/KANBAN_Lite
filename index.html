@@ -22,7 +22,7 @@
         <ul class="sidebar-links">
 
             <li>
-                <a href="#" class="sidebar-object" data-page-section="page-dashboard">
+                <a href="#" class="sidebar-object active" data-page-section="page-dashboard">
                     <span class="material-symbols-outlined">
                         dashboard
                     </span>
@@ -30,7 +30,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="sidebar-object active" data-page-section="page-my-board">
+                <a href="#" class="sidebar-object" data-page-section="page-my-board">
                     <span class="material-symbols-outlined">
                         note_stack
                     </span>
@@ -62,12 +62,77 @@
     <main class="main-content">
 
         <!-- 總覽 -->
-        <section class="page-section" id="page-dashboard">
-            <h1>總覽</h1>
+        <section class="page-section active" id="page-dashboard">
+            <header class="dashboard-header">
+                <h1>總覽</h1>
+            </header>
+            <hr>
+            <div class="dashboard-main">
+
+                <div class="task-count">
+                    <div class="dashboard-count-card">
+                        <h2>Total</h2>
+                        <p id="dashboard-total-count">0</p>
+                    </div>
+                    <div class="dashboard-count-card">
+                        <h2>To Do</h2>
+                        <p id="dashboard-todo-count">0</p>
+                    </div>
+                    <div class="dashboard-count-card">
+                        <h2>In Progress</h2>
+                        <p id="dashboard-inprogress-count">0</p>
+                    </div>
+                    <div class="dashboard-count-card">
+                        <h2>Done</h2>
+                        <p id="dashboard-done-count">0</p>
+
+                    </div>
+                </div>
+
+                <div class="dashboard-detail-row">
+                    <div class="completion-rate-bar">
+                        <h2>任務完成度</h2>
+                        <div class="completion-rate-content">
+                            <div class="completion-progress">
+                                <div class="completion-progress-fill" id="completion-progress-fill"></div>
+                            </div>
+                            <span id="dashboard-completion-rate">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="priority-count">
+                        <h2>任務優先度</h2>
+                        <div class="priority-count-container">
+                            <div class="priority-count-content">
+                                <h2>High</h2>
+                                <p id="dashboard-high-count">0</p>
+                            </div>
+                            <div class="priority-count-content">
+                                <h2>Medium</h2>
+                                <p id="dashboard-medium-count">0</p>
+                            </div>
+                            <div class="priority-count-content">
+                                <h2>Low</h2>
+                                <p id="dashboard-low-count">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="priority-focus">
+                    <h2>待處理優先任務</h2>
+                    <div class="priority-focus-container">
+                        <h3>task 1</h3>
+                        <h3>task 2</h3>
+                        <h3>task 3</h3>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <!-- 我的看板 -->
-        <section class="page-section active" id="page-my-board">
+        <section class="page-section" id="page-my-board">
             <header class="board-header">
                 <h1>我的看板</h1>
                 <button id="add-task-btn" class="add-task-btn">
