@@ -16,6 +16,16 @@ $(document).ready(() => {
     refreshUI();
 })
 
+function dynamicDate(daysOffset) {
+    const date = new Date();
+    date.setDate(date.getDate() + daysOffset);
+    const yy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+
+    return `${yy}-${mm}-${dd}`;
+}
+
 let tasks = [
     {
         id: 1,
@@ -23,7 +33,8 @@ let tasks = [
         content: "今晚跟王董有關於收購案的會議",
         priority: "high",
         tag: "meeting",
-        status: "todo"
+        status: "todo",
+        dueDate: dynamicDate(0)
     },
     {
         id: 2,
@@ -31,7 +42,8 @@ let tasks = [
         content: "部分用戶反映三方登入時會出現 500 錯誤，需要緊急排查",
         priority: "high",
         tag: "bug",
-        status: "inprogress"
+        status: "inprogress",
+        dueDate: dynamicDate(5)
     },
     {
         id: 3,
@@ -39,7 +51,8 @@ let tasks = [
         content: "完成第二版首頁 RWD 視覺設計，並提交給產品經理審查",
         priority: "medium",
         tag: "design",
-        status: "todo"
+        status: "todo",
+        dueDate: dynamicDate(2)
     },
     {
         id: 4,
@@ -47,7 +60,8 @@ let tasks = [
         content: "針對新功能上線擬定社群與廣告投放策略",
         priority: "medium",
         tag: "marketing",
-        status: "done"
+        status: "done",
+        dueDate: dynamicDate(-2)
     },
     {
         id: 5,
@@ -55,7 +69,8 @@ let tasks = [
         content: "確認下一個雙週衝刺的任務分配與點數估算",
         priority: "high",
         tag: "meeting",
-        status: "todo"
+        status: "todo",
+        dueDate: dynamicDate(4)
     },
     {
         id: 6,
@@ -63,7 +78,8 @@ let tasks = [
         content: "實作 LINE Pay 與信用卡金流串接 API",
         priority: "high",
         tag: "feature",
-        status: "inprogress"
+        status: "inprogress",
+        dueDate: dynamicDate(1)
     },
     {
         id: 7,
@@ -71,7 +87,8 @@ let tasks = [
         content: "針對商品搜尋頁面的 SQL 進行 Index 優化，降低延遲",
         priority: "medium",
         tag: "feature",
-        status: "todo"
+        status: "todo",
+        dueDate: dynamicDate(10)
     },
     {
         id: 8,
@@ -79,7 +96,8 @@ let tasks = [
         content: "使用者連續點擊減少數量時，偶爾會變成負數",
         priority: "high",
         tag: "bug",
-        status: "done"
+        status: "done",
+        dueDate: ""
     },
     {
         id: 9,
@@ -87,7 +105,8 @@ let tasks = [
         content: "將使用者模組與權限控管的 API 規格更新至 Swagger",
         priority: "low",
         tag: "design",
-        status: "done"
+        status: "done",
+        dueDate: ""
     },
     {
         id: 10,
@@ -95,7 +114,8 @@ let tasks = [
         content: "與營運團隊、設計團隊同步目前專案開發進度",
         priority: "low",
         tag: "meeting",
-        status: "todo"
+        status: "todo",
+        dueDate: ""
     },
     {
         id: 11,
@@ -103,7 +123,8 @@ let tasks = [
         content: "分析上週按鈕顏色調整後的轉化率變化",
         priority: "medium",
         tag: "marketing",
-        status: "inprogress"
+        status: "inprogress",
+        dueDate: ""
     },
     {
         id: 12,
@@ -111,7 +132,8 @@ let tasks = [
         content: "根據設計規範，實作全站切換暗黑模式的 CSS 樣式",
         priority: "low",
         tag: "feature",
-        status: "todo"
+        status: "todo",
+        dueDate: dynamicDate(3)
     },
     {
         id: 13,
@@ -119,7 +141,8 @@ let tasks = [
         content: "iOS App 用戶在上傳大於 5MB 的大頭貼時會閃退",
         priority: "high",
         tag: "bug",
-        status: "inprogress"
+        status: "inprogress",
+        dueDate: dynamicDate(-5)
     },
     {
         id: 14,
@@ -127,7 +150,8 @@ let tasks = [
         content: "規劃新版介面的滿意度調查問卷題目",
         priority: "low",
         tag: "design",
-        status: "todo"
+        status: "todo",
+        dueDate: dynamicDate(-15)
     },
     {
         id: 15,
@@ -135,7 +159,8 @@ let tasks = [
         content: "安排在離峰時間進行伺服器節點升級與重啟測試",
         priority: "high",
         tag: "feature",
-        status: "done"
+        status: "done",
+        dueDate: dynamicDate(-1)
     },
     {
         id: 16,
@@ -143,7 +168,8 @@ let tasks = [
         content: "與法務確認下個月網紅業配的合作條款與授權範圍",
         priority: "medium",
         tag: "meeting",
-        status: "inprogress"
+        status: "inprogress",
+        dueDate: dynamicDate(1)
     }
 ];
 
@@ -191,10 +217,31 @@ function createTaskCard(task) {
                 <div class="task-card-tags">
                     <span class="task-card-tag">${task.tag}</span>
                 </div>
+                <div class="task-due-date ${getDueStatus(task.dueDate)}">
+                    ${(task.dueDate) ? task.dueDate : "無截止日期"}
+                </div>
             </div>
             `;
 }
 
+function getDueStatus(dueDate) {
+    if (!dueDate) {
+        return "no-date";
+    }
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    const date2 = Date.parse(dueDate);
+    const diffTime = date2 - date;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) {
+        return "overdue";
+    } else if (diffDays <= 3) {
+        return "due-soon";
+    } else {
+        return "normal";
+    }
+}
 
 let editingTaskId = -1;
 
