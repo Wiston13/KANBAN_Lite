@@ -202,26 +202,20 @@ function renderTasks() {
     })
 }
 
+//防止XSS
 function createTaskCard(task) {
-    return `
-            <div class="task-card" data-id="${task.id}" draggable="true">
-                <div class="task-card-title">
-                    ${task.title}
-                </div>
-                <div class="task-card-content">
-                    ${task.content}
-                </div>
-                <div class="task-card-priority priority-${task.priority}">
-                    ${task.priority}
-                </div>
-                <div class="task-card-tags">
-                    <span class="task-card-tag">${task.tag}</span>
-                </div>
-                <div class="task-due-date ${getDueStatus(task.dueDate)}">
-                    ${(task.dueDate) ? task.dueDate : "無截止日期"}
-                </div>
-            </div>
-            `;
+    const divTaskCard = $("<div></div>").addClass("task-card").data("id", task.id).attr("draggable", true);
+    const divTaskCardTitle = $("<div></div>").addClass("task-card-title").text(task.title);
+    const divTaskCardContent = $("<div></div>").addClass("task-card-content").text(task.content);
+    const divTaskCardPriority = $("<div></div>").addClass("task-card-priority").addClass("priority-" + task.priority).text(task.priority);
+    const divTaskCardTags = $("<div></div>").addClass("task-card-tags");
+    const spanTaskCardTag = $("<span></span>").addClass("task-card-tag").text(task.tag);
+    const divTaskDueDate = $("<div></div>").addClass("task-due-date").addClass(getDueStatus(task.dueDate)).text((task.dueDate) ? task.dueDate : "無截止日期");
+
+    divTaskCardTags.append(spanTaskCardTag);
+    divTaskCard.append(divTaskCardTitle, divTaskCardContent, divTaskCardPriority, divTaskCardTags, divTaskDueDate);
+
+    return divTaskCard;
 }
 
 function getDueStatus(dueDate) {
@@ -511,28 +505,35 @@ const dashboard = {
         }
 
         focusTasks.sort(function (a, b) {
-            if (a.dueDate === "") {
-                a.dueDate = 0;
+            const aHasDate = !!a.dueDate;
+            const bHasDate = !!b.dueDate;
+
+            if ((aHasDate) && (!bHasDate)) {
+                return -1;
             }
-            if (b.dueDate === "") {
-                b.dueDate = 0;
+            if ((!aHasDate) && (bHasDate)) {
+                return 1;
+            }
+            if ((!aHasDate) && (!bHasDate)) {
+                return 0;
             }
             return Date.parse(a.dueDate) - Date.parse(b.dueDate);
         });
 
-        //未防止XSS
+        //防止XSS
         $.each(focusTasks, (index, element) => {
-            // $(".priority-focus-container").append(`
-            //     <div class="priority-focus-task">
-            //         <h3 class="priority-focus-task-title">${element.title}</h3>
-            //         <h3 class="priority-focus-task-due-date">${(element.dueDate) ? element.dueDate : "無截止日期"}</h3>
-            //     </div>`
-            // );
-            $(".priority-focus-container").append(
-                $("<div></div>").addClass("priority-focus-task").append($("<h3></h3>").addClass("priority-focus-task-title").text(element.title) + $("<h3></h3>").addClass("priority-focus-task-due-date").text((element.dueDate) ? element.dueDate : "無截止日期"))
-            );
-        });
+            const taskDiv = $("<div></div>").addClass("priority-focus-task");
+            const titleElement = $("<h3></h3>")
+                .addClass("priority-focus-task-title")
+                .text(element.title);
+            const dueDateElement = $("<h3></h3>")
+                .addClass("priority-focus-task-due-date")
+                .text(element.dueDate ? element.dueDate : "無截止日期");
 
+            taskDiv.append(titleElement);
+            taskDiv.append(dueDateElement);
+            $(".priority-focus-container").append(taskDiv);
+        });
     },
 
     renderDashboard() {
