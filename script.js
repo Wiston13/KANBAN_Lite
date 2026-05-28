@@ -29,147 +29,165 @@ function dynamicDate(daysOffset) {
 let tasks = [
     {
         id: 1,
-        title: "今晚跟王董開會",
-        content: "今晚跟王董有關於收購案的會議",
-        priority: "high",
-        tag: "meeting",
-        status: "todo",
-        dueDate: dynamicDate(0)
-    },
-    {
-        id: 2,
-        title: "修復登入頁面 Bug",
-        content: "部分用戶反映三方登入時會出現 500 錯誤，需要緊急排查",
+        title: "修復登入頁面 500 錯誤",
+        content: "第三方登入偶爾回傳 500，需要確認 API 回應與錯誤處理流程",
         priority: "high",
         tag: "bug",
-        status: "inprogress",
-        dueDate: dynamicDate(5)
-    },
-    {
-        id: 3,
-        title: "設計首頁 UI 視覺稿",
-        content: "完成第二版首頁 RWD 視覺設計，並提交給產品經理審查",
-        priority: "medium",
-        tag: "design",
         status: "todo",
-        dueDate: dynamicDate(2)
-    },
-    {
-        id: 4,
-        title: "撰寫 Q3 季度行銷企劃",
-        content: "針對新功能上線擬定社群與廣告投放策略",
-        priority: "medium",
-        tag: "marketing",
-        status: "done",
         dueDate: dynamicDate(-2)
     },
     {
-        id: 5,
-        title: "與開發團隊進行 Sprint 規劃",
-        content: "確認下一個雙週衝刺的任務分配與點數估算",
+        id: 2,
+        title: "今日完成專題簡報初稿",
+        content: "整理功能亮點、技術架構、操作流程與未來展望",
         priority: "high",
-        tag: "meeting",
-        status: "todo",
-        dueDate: dynamicDate(4)
+        tag: "presentation",
+        status: "inprogress",
+        dueDate: dynamicDate(0)
     },
     {
-        id: 6,
-        title: "開發購物車結帳功能",
-        content: "實作 LINE Pay 與信用卡金流串接 API",
+        id: 3,
+        title: "補上任務截止日期功能測試",
+        content: "測試新增、編輯、清空日期、重置範例資料後是否正確顯示",
         priority: "high",
-        tag: "feature",
-        status: "inprogress",
+        tag: "qa",
+        status: "todo",
         dueDate: dynamicDate(1)
     },
     {
-        id: 7,
-        title: "優化資料庫查詢效能",
-        content: "針對商品搜尋頁面的 SQL 進行 Index 優化，降低延遲",
+        id: 4,
+        title: "調整 Dashboard due date 統計",
+        content: "確認今日到期、即將到期、尚未到期、無截止日期的統計數字",
         priority: "medium",
-        tag: "feature",
+        tag: "dashboard",
+        status: "inprogress",
+        dueDate: dynamicDate(2)
+    },
+    {
+        id: 5,
+        title: "重構 Dashboard 統計邏輯",
+        content: "將重複 filter 的統計方法整理成更集中的 stats function",
+        priority: "medium",
+        tag: "refactor",
         status: "todo",
-        dueDate: dynamicDate(10)
+        dueDate: dynamicDate(3)
+    },
+    {
+        id: 6,
+        title: "完成表單欄位樣式微調",
+        content: "檢查 date input、select、textarea 在 modal 中的間距是否一致",
+        priority: "low",
+        tag: "ui",
+        status: "todo",
+        dueDate: dynamicDate(5)
+    },
+    {
+        id: 7,
+        title: "整理 README 操作說明",
+        content: "補充如何新增任務、拖曳任務、清除資料、重置範例資料",
+        priority: "medium",
+        tag: "docs",
+        status: "todo",
+        dueDate: dynamicDate(7)
     },
     {
         id: 8,
-        title: "修正購物車數量歸零 Bug",
-        content: "使用者連續點擊減少數量時，偶爾會變成負數",
-        priority: "high",
-        tag: "bug",
-        status: "done",
-        dueDate: ""
+        title: "設計篩選功能草稿",
+        content: "先規劃 priority、tag、keyword search 的資料流，不急著實作",
+        priority: "low",
+        tag: "feature",
+        status: "todo",
+        dueDate: dynamicDate(14)
     },
     {
         id: 9,
-        title: "撰寫 API 規格文件",
-        content: "將使用者模組與權限控管的 API 規格更新至 Swagger",
-        priority: "low",
-        tag: "design",
-        status: "done",
-        dueDate: ""
+        title: "檢查拖曳任務後 Dashboard 是否同步",
+        content: "把任務從 todo 拖到 done，確認完成率與各統計數字正確更新",
+        priority: "high",
+        tag: "qa",
+        status: "inprogress",
+        dueDate: dynamicDate(4)
     },
     {
         id: 10,
-        title: "每週跨部門進度同步會",
-        content: "與營運團隊、設計團隊同步目前專案開發進度",
-        priority: "low",
-        tag: "meeting",
+        title: "無截止日期的高優先任務",
+        content: "用來測試 Priority Focus 排序時，無日期任務是否排在最後",
+        priority: "high",
+        tag: "test",
         status: "todo",
         dueDate: ""
     },
     {
         id: 11,
-        title: "準備 A/B 測試數據報告",
-        content: "分析上週按鈕顏色調整後的轉化率變化",
+        title: "普通無截止日期任務",
+        content: "測試 task card 是否顯示「無截止日期」，dashboard 是否計入 no-date",
         priority: "medium",
-        tag: "marketing",
+        tag: "test",
         status: "inprogress",
         dueDate: ""
     },
     {
         id: 12,
-        title: "新增暗黑模式 (Dark Mode)",
-        content: "根據設計規範，實作全站切換暗黑模式的 CSS 樣式",
+        title: "低優先度無截止日期任務",
+        content: "測試 low priority 且無截止日期的未完成任務統計",
         priority: "low",
-        tag: "feature",
+        tag: "test",
         status: "todo",
-        dueDate: dynamicDate(3)
+        dueDate: ""
     },
     {
         id: 13,
-        title: "處理客服回報的圖片上傳失敗",
-        content: "iOS App 用戶在上傳大於 5MB 的大頭貼時會閃退",
+        title: "已完成但逾期的任務",
+        content: "這筆任務已完成，所以不應該被算進未完成任務截止日期統計",
         priority: "high",
-        tag: "bug",
-        status: "inprogress",
+        tag: "done",
+        status: "done",
         dueDate: dynamicDate(-5)
     },
     {
         id: 14,
-        title: "設計使用者問卷調研",
-        content: "規劃新版介面的滿意度調查問卷題目",
-        priority: "low",
-        tag: "design",
-        status: "todo",
-        dueDate: dynamicDate(-15)
+        title: "已完成且今日到期的任務",
+        content: "測試 done 任務即使 dueDate 是今天，也不應進入未完成截止統計",
+        priority: "medium",
+        tag: "done",
+        status: "done",
+        dueDate: dynamicDate(0)
     },
     {
         id: 15,
-        title: "K8s 叢集例行性維護",
-        content: "安排在離峰時間進行伺服器節點升級與重啟測試",
-        priority: "high",
-        tag: "feature",
+        title: "已完成且無截止日期任務",
+        content: "測試 done + no-date 不應影響未完成任務的 no-date 統計",
+        priority: "low",
+        tag: "done",
         status: "done",
-        dueDate: dynamicDate(-1)
+        dueDate: ""
     },
     {
         id: 16,
-        title: "確認 KOL 合作合約內容",
-        content: "與法務確認下個月網紅業配的合作條款與授權範圍",
+        title: "優化 task card 文字截斷",
+        content: "這是一段比較長的描述，用來測試 task card content 是否可以正常兩行截斷，不會把卡片高度撐爆或破壞排版",
         priority: "medium",
-        tag: "meeting",
-        status: "inprogress",
-        dueDate: dynamicDate(1)
+        tag: "ui",
+        status: "todo",
+        dueDate: dynamicDate(10)
+    },
+    {
+        id: 17,
+        title: "<h1>XSS 測試標題</h1>",
+        content: "<script>alert('test')</script> 這段應該被當作純文字顯示，而不是被瀏覽器執行",
+        priority: "high",
+        tag: "security",
+        status: "todo",
+        dueDate: dynamicDate(2)
+    },
+    {
+        id: 18,
+        title: "確認 reset demo data 行為",
+        content: "清除所有資料後，再按重置範例資料，應該恢復這組測試資料",
+        priority: "medium",
+        tag: "settings",
+        status: "todo",
+        dueDate: dynamicDate(6)
     }
 ];
 
