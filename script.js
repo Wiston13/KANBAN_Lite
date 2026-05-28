@@ -502,19 +502,37 @@ const dashboard = {
     },
 
     renderPriorityFocus(tasks) {
-        let focusTasks = this.getPriorityFocus(tasks);
         $(".priority-focus-container").empty();
+        let focusTasks = this.getPriorityFocus(tasks);
 
         if (focusTasks.length === 0) {
             $(".priority-focus-container").append(`<p>目前沒有待處理的高優先度任務！</p>`);
             return;
         }
-        //防止XSS
+
+        focusTasks.sort(function (a, b) {
+            if (a.dueDate === "") {
+                a.dueDate = 0;
+            }
+            if (b.dueDate === "") {
+                b.dueDate = 0;
+            }
+            return Date.parse(a.dueDate) - Date.parse(b.dueDate);
+        });
+
+        //未防止XSS
         $.each(focusTasks, (index, element) => {
+            // $(".priority-focus-container").append(`
+            //     <div class="priority-focus-task">
+            //         <h3 class="priority-focus-task-title">${element.title}</h3>
+            //         <h3 class="priority-focus-task-due-date">${(element.dueDate) ? element.dueDate : "無截止日期"}</h3>
+            //     </div>`
+            // );
             $(".priority-focus-container").append(
-                $("<h3></h3>").text(element.title)
+                $("<div></div>").addClass("priority-focus-task").append($("<h3></h3>").addClass("priority-focus-task-title").text(element.title) + $("<h3></h3>").addClass("priority-focus-task-due-date").text((element.dueDate) ? element.dueDate : "無截止日期"))
             );
         });
+
     },
 
     renderDashboard() {

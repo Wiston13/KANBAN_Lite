@@ -1491,8 +1491,12 @@ main {
     gap: var(--space-3);
 }
 
-.priority-focus-container p,
-.priority-focus-container h3 {
+.priority-focus-task {
+    display: flex;
+    justify-content: space-between;
+}
+
+.priority-focus-task h3 {
     margin: 0;
     padding: var(--space-3) var(--space-4);
 
@@ -1513,7 +1517,7 @@ main {
         color var(--duration-fast) var(--ease-standard);
 }
 
-.priority-focus-container h3::before {
+.priority-focus-task-title::before {
     content: "";
     flex-shrink: 0;
 
@@ -1524,7 +1528,7 @@ main {
     border-radius: 50%;
 }
 
-.priority-focus-container h3:hover {
+.priority-focus-task:hover {
     color: var(--color-text-primary);
     background-color: var(--color-bg-surface);
 }
