@@ -216,9 +216,6 @@ function closeAndResetTaskModal() {
 
 $("#add-task-btn").on("click", () => {
     resetTaskForm();
-    if (loadTasksFromLocalStorage() === null) {
-        saveTasksToLocalStorage([]);
-    }
     $(".task-modal").addClass("active");
 });
 
@@ -279,6 +276,7 @@ $("#task-modal").on("click", function (e) {
         closeAndResetTaskModal();
     }
 });
+
 
 // popover
 const actionPopover = $("#confirm-popover")[0];
