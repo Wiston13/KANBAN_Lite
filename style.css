@@ -964,7 +964,7 @@ main {
 ========================================================= */
 
 #confirm-popover {
-    width: min(420px, calc(100vw - var(--space-8)));
+    width: min(480px, calc(100vw - var(--space-8)));
     padding: var(--space-6);
 
     color: var(--color-text-primary);

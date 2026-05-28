@@ -12,6 +12,8 @@ $(document).ready(() => {
         let targetPageId = $(this).data("page-section");
         $("#" + targetPageId).addClass("active");
     })
+
+    refreshUI();
 })
 
 let tasks = [
@@ -145,16 +147,24 @@ let tasks = [
     }
 ];
 
-
 function saveTasksToLocalStorage(tasks) {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
 function loadTasksFromLocalStorage() {
-    return JSON.parse(localStorage.getItem("tasks"));
+    const savedTasks = localStorage.getItem("tasks");
+
+    if (savedTasks === null) {
+        saveTasksToLocalStorage([]);
+        return [];
+    }
+
+    return JSON.parse(savedTasks);
 }
 
-if (loadTasksFromLocalStorage() === null) {
-    saveTasksToLocalStorage(tasks);
+function refreshUI() {
+    renderTasks();
+    dashboard.renderDashboard();
 }
 
 function renderTasks() {
@@ -185,7 +195,6 @@ function createTaskCard(task) {
             `;
 }
 
-renderTasks();
 
 let editingTaskId = -1;
 
@@ -207,6 +216,9 @@ function closeAndResetTaskModal() {
 
 $("#add-task-btn").on("click", () => {
     resetTaskForm();
+    if (loadTasksFromLocalStorage() === null) {
+        saveTasksToLocalStorage([]);
+    }
     $(".task-modal").addClass("active");
 });
 
@@ -254,8 +266,7 @@ $("#task-form").on("submit", function (e) {
         tasks.splice(tasksIndex, 1, task);
     }
     saveTasksToLocalStorage(tasks);
-    renderTasks();
-    dashboard.renderDashboard();
+    refreshUI();
     closeAndResetTaskModal();
 })
 
@@ -277,22 +288,22 @@ $("#delete-task-btn").on("click", () => {
     if (editingTaskId < 0) {
         return;
     }
-    $("#confirm-popover-message").text("此操作無法復原，確認要刪除此任務嗎？");
-    confirmAction = "delete-task";
-    actionPopover.showPopover();
+    popoverAction("delete-task", "此操作無法復原，確認要刪除此任務嗎？");
 })
 
 $("#clear-tasks-btn").on("click", () => {
-    $("#confirm-popover-message").text("確認要清除所有任務資料嗎？");
-    confirmAction = "clear-task";
-    actionPopover.showPopover();
+    popoverAction("clear-task", "確認要清除所有任務資料嗎？");
 })
 
 $("#reset-demo-tasks-btn").on("click", () => {
-    $("#confirm-popover-message").text("確認要重置為範例資料嗎？目前資料會被覆蓋。");
-    confirmAction = "reset-task";
-    actionPopover.showPopover();
+    popoverAction("reset-task", "目前資料會被覆蓋，確認要重置為範例資料嗎？");
 })
+
+function popoverAction(action, msg) {
+    confirmAction = action;
+    $("#confirm-popover-message").text(msg);
+    actionPopover.showPopover();
+}
 
 $("#confirm-action-btn").on("click", () => {
     if (confirmAction === "clear-task") {
@@ -316,9 +327,8 @@ $("#confirm-action-btn").on("click", () => {
     } else {
         return;
     }
-    renderTasks();
-    dashboard.renderDashboard();
 
+    refreshUI();
     actionPopover.hidePopover();
     confirmAction = "";
 })
@@ -327,6 +337,7 @@ $("#close-popover-btn").on("click", () => {
     actionPopover.hidePopover();
     confirmAction = "";
 })
+
 
 // Task Cards Drag & Drop
 $(document).on("dragstart", ".task-card", function (e) {
@@ -363,66 +374,63 @@ $(document).on("drop", ".task-list", function (e) {
     }
     task.status = targetStatus;
     saveTasksToLocalStorage(tasks);
-    renderTasks();
-    dashboard.renderDashboard();
+    refreshUI();
 });
+
 
 //dashboard
 const dashboard = {
-    getTasks() {
-        return loadTasksFromLocalStorage();
+
+    totalCount(tasks) {
+        return tasks.length;
     },
 
-    totalCount() {
-        return this.getTasks().length;
+    todoCount(tasks) {
+        return tasks.filter(task => task.status === "todo").length;
     },
 
-    todoCount() {
-        return this.getTasks().filter(task => task.status === "todo").length;
+    inprogressCount(tasks) {
+        return tasks.filter(task => task.status === "inprogress").length;
     },
 
-    inprogressCount() {
-        return this.getTasks().filter(task => task.status === "inprogress").length;
+    doneCount(tasks) {
+        return tasks.filter(task => task.status === "done").length;
     },
 
-    doneCount() {
-        return this.getTasks().filter(task => task.status === "done").length;
-    },
-
-    highCount() {
-        return this.getTasks().filter(task =>
+    highCount(tasks) {
+        return tasks.filter(task =>
             task.priority === "high" &&
             task.status !== "done").length;
     },
 
-    mediumCount() {
-        return this.getTasks().filter(task =>
+    mediumCount(tasks) {
+        return tasks.filter(task =>
             task.priority === "medium" &&
             task.status !== "done").length;
     },
 
-    lowCount() {
-        return this.getTasks().filter(task =>
+    lowCount(tasks) {
+        return tasks.filter(task =>
             task.priority === "low" &&
             task.status !== "done").length;
     },
 
-    completionRateCount() {
-        if (this.totalCount() === 0) {
+    completionRateCount(tasks) {
+        if (this.totalCount(tasks) === 0) {
             return 0;
         }
-        return Math.round(this.doneCount() / this.totalCount() * 100);
+        return Math.round(this.doneCount(tasks) / this.totalCount(tasks) * 100);
     },
 
-    getPriorityFocus() {
-        return this.getTasks().filter(task =>
+    getPriorityFocus(tasks) {
+        return tasks.filter(task =>
             task.priority === "high" &&
             task.status !== "done"
         );
     },
 
-    renderPriorityFocus() {
-        let focusTasks = this.getPriorityFocus();
+    renderPriorityFocus(tasks) {
+        let focusTasks = this.getPriorityFocus(tasks);
         $(".priority-focus-container").empty();
 
         if (focusTasks.length === 0) {
@@ -438,18 +446,20 @@ const dashboard = {
     },
 
     renderDashboard() {
-        $("#dashboard-total-count").text(this.totalCount());
-        $("#dashboard-todo-count").text(this.todoCount());
-        $("#dashboard-inprogress-count").text(this.inprogressCount());
-        $("#dashboard-done-count").text(this.doneCount());
-        $("#dashboard-high-count").text(this.highCount());
-        $("#dashboard-medium-count").text(this.mediumCount());
-        $("#dashboard-low-count").text(this.lowCount());
-        let rate = this.completionRateCount();
+        let tasks = loadTasksFromLocalStorage();
+
+        $("#dashboard-total-count").text(this.totalCount(tasks));
+        $("#dashboard-todo-count").text(this.todoCount(tasks));
+        $("#dashboard-inprogress-count").text(this.inprogressCount(tasks));
+        $("#dashboard-done-count").text(this.doneCount(tasks));
+        $("#dashboard-high-count").text(this.highCount(tasks));
+        $("#dashboard-medium-count").text(this.mediumCount(tasks));
+        $("#dashboard-low-count").text(this.lowCount(tasks));
+
+        let rate = this.completionRateCount(tasks);
         $("#dashboard-completion-rate").text(rate + "%");
         $(".completion-progress-fill").css("width", rate + "%");
-        this.renderPriorityFocus();
+        this.renderPriorityFocus(tasks);
     }
 };
 
-dashboard.renderDashboard();
