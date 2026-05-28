@@ -254,6 +254,7 @@ function resetTaskForm() {
     $("#task-tag-input").val("");
     $("#task-priority-input").val("medium");
     $("#task-status-input").val("todo");
+    $("#due-date-input").val("");
 }
 
 function closeAndResetTaskModal() {
@@ -279,6 +280,7 @@ $(document).on("click", ".task-card", function () {
     $("#task-tag-input").val(task.tag);
     $("#task-priority-input").val(task.priority);
     $("#task-status-input").val(task.status);
+    $("#due-date-input").val(task.dueDate);
     $(".task-modal-header h2").text("編輯任務");
     $("#delete-task-btn").show();
 
@@ -294,7 +296,8 @@ $("#task-form").on("submit", function (e) {
         "content": $("#task-description-input").val().trim(),
         "priority": $("#task-priority-input").val(),
         "tag": $("#task-tag-input").val().trim(),
-        "status": $("#task-status-input").val()
+        "status": $("#task-status-input").val(),
+        "dueDate": $("#due-date-input").val()
     };
     if (task.tag === "") {
         task.tag = "general";
@@ -460,6 +463,30 @@ const dashboard = {
             task.status !== "done").length;
     },
 
+    overDueCount(tasks) {
+        return tasks.filter(task =>
+            getDueStatus(task.dueDate) === "overdue" &&
+            task.status !== "done").length;
+    },
+
+    dueSoonCount(tasks) {
+        return tasks.filter(task =>
+            getDueStatus(task.dueDate) === "due-soon" &&
+            task.status !== "done").length;
+    },
+
+    normalCount(tasks) {
+        return tasks.filter(task =>
+            getDueStatus(task.dueDate) === "normal" &&
+            task.status !== "done").length;
+    },
+
+    noDateCount(tasks) {
+        return tasks.filter(task =>
+            getDueStatus(task.dueDate) === "no-date" &&
+            task.status !== "done").length;
+    },
+
     completionRateCount(tasks) {
         if (this.totalCount(tasks) === 0) {
             return 0;
@@ -500,6 +527,11 @@ const dashboard = {
         $("#dashboard-high-count").text(this.highCount(tasks));
         $("#dashboard-medium-count").text(this.mediumCount(tasks));
         $("#dashboard-low-count").text(this.lowCount(tasks));
+        $("#dashboard-overdue-count").text(this.overDueCount(tasks));
+        $("#dashboard-due-soon-count").text(this.dueSoonCount(tasks));
+        $("#dashboard-normal-count").text(this.normalCount(tasks));
+        $("#dashboard-no-date-count").text(this.noDateCount(tasks));
+
 
         let rate = this.completionRateCount(tasks);
         $("#dashboard-completion-rate").text(rate + "%");

@@ -708,9 +708,13 @@ main {
     font-weight: var(--font-weight-semibold);
 }
 
-.task-due-date.no-date,
-.task-due-date.normal {
+.task-due-date.no-date {
     color: var(--color-text-muted);
+    background-color: var(--color-accent-soft);
+}
+
+.task-due-date.normal {
+    color: var(--color-success);
     background-color: var(--color-accent-soft);
 }
 
@@ -1249,6 +1253,7 @@ main {
     gap: var(--space-5);
 }
 
+.due-date-count,
 .completion-rate-bar,
 .priority-count {
     flex: 1;
@@ -1266,6 +1271,7 @@ main {
     box-shadow: var(--shadow-card);
 }
 
+.due-date-count>h2,
 .completion-rate-bar h2,
 .priority-count>h2 {
     margin: 0;
@@ -1319,13 +1325,81 @@ main {
 }
 
 /* =========================================================
+   Due Date Count
+========================================================= */
+
+.due-date-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.due-date-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.due-date-content h2 {
+    position: relative;
+
+    margin: 0;
+    padding-left: var(--space-6);
+
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.25;
+}
+
+.due-date-content p {
+    margin: 0;
+
+    color: var(--color-text-primary);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+}
+
+.due-date-content h2::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+
+    width: 13px;
+    height: 13px;
+
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.due-date-content:nth-child(1) h2::before {
+    background-color: var(--color-danger);
+}
+
+.due-date-content:nth-child(2) h2::before {
+    background-color: var(--color-warning);
+}
+
+.due-date-content:nth-child(3) h2::before {
+    background-color: var(--color-success);
+}
+
+.due-date-content:nth-child(4) h2::before {
+    background-color: var(--color-text-muted);
+}
+
+/* =========================================================
    Priority Count
 ========================================================= */
 
 .priority-count-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     gap: var(--space-5);
 }
 
