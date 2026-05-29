@@ -14,6 +14,8 @@ $(document).ready(() => {
     })
 
     refreshUI();
+    dragAndDrop.init();
+    confirmPopover.init();
 })
 
 function dynamicDate(daysOffset) {
@@ -341,120 +343,148 @@ $("#task-modal").on("click", function (e) {
 
 
 // popover
-const actionPopover = $("#confirm-popover")[0];
-let confirmAction = "";
+const confirmPopover = {
+    actionPopover: $("#confirm-popover")[0],
 
-$("#delete-task-btn").on("click", () => {
-    if (editingTaskId < 0) {
-        return;
+    currentAction: "",
+
+    confirmActionMap: {
+        "clear-task": () => {
+            saveTasksToLocalStorage([]);
+            return true;
+        },
+
+        "reset-task": () => {
+            saveTasksToLocalStorage(tasks);
+            return true;
+        },
+
+        "delete-task": () => {
+            if (editingTaskId < 0) {
+                return false;
+            }
+            let tasks = loadTasksFromLocalStorage();
+            let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
+
+            if (tasksIndex === -1) {
+                alert("發生錯誤，請重試一次!");
+                return false;
+            }
+            tasks.splice(tasksIndex, 1);
+            saveTasksToLocalStorage(tasks);
+            closeAndResetTaskModal();
+            return true;
+        }
+    },
+
+    open(action, msg) {
+        this.currentAction = action;
+        $("#confirm-popover-message").text(msg);
+        this.actionPopover.showPopover();
+    },
+
+    confirm() {
+        const action = this.confirmActionMap[this.currentAction];
+        if (!action) {
+            return;
+        }
+        const result = action();
+        if (!result) {
+            return;
+        }
+        refreshUI();
+        this.actionPopover.hidePopover();
+        this.currentAction = "";
+    },
+
+    cancel() {
+        this.actionPopover.hidePopover();
+        this.currentAction = "";
+    },
+
+    bindEvents() {
+        $("#delete-task-btn").on("click", () => {
+            if (editingTaskId < 0) {
+                return;
+            }
+            this.open("delete-task", "此操作無法復原，確認要刪除此任務嗎？");
+        })
+
+        $("#clear-tasks-btn").on("click", () => {
+            this.open("clear-task", "確認要清除所有任務資料嗎？");
+        })
+
+        $("#reset-demo-tasks-btn").on("click", () => {
+            this.open("reset-task", "目前資料會被覆蓋，確認要重置為範例資料嗎？");
+        })
+
+        $("#confirm-action-btn").on("click", () => {
+            this.confirm();
+        })
+
+        $("#close-popover-btn").on("click", () => {
+            this.cancel();
+        })
+    },
+    init() {
+        this.bindEvents();
     }
-    popoverAction("delete-task", "此操作無法復原，確認要刪除此任務嗎？");
-})
-
-$("#clear-tasks-btn").on("click", () => {
-    popoverAction("clear-task", "確認要清除所有任務資料嗎？");
-})
-
-$("#reset-demo-tasks-btn").on("click", () => {
-    popoverAction("reset-task", "目前資料會被覆蓋，確認要重置為範例資料嗎？");
-})
-
-function popoverAction(action, msg) {
-    confirmAction = action;
-    $("#confirm-popover-message").text(msg);
-    actionPopover.showPopover();
 }
 
-const confirmActionMap = {
-    "clear-task": () => {
-        saveTasksToLocalStorage([]);
-        return true;
-    },
-
-    "reset-task": () => {
-        saveTasksToLocalStorage(tasks);
-        return true;
-    },
-
-    "delete-task": () => {
-        if (editingTaskId < 0) {
-            return false;
-        }
-        let tasks = loadTasksFromLocalStorage();
-        let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
-
-        if (tasksIndex === -1) {
-            alert("發生錯誤，請重試一次!");
-            return false;
-        }
-        tasks.splice(tasksIndex, 1);
-        saveTasksToLocalStorage(tasks);
-        closeAndResetTaskModal();
-        return true;
-    }
-};
-
-$("#confirm-action-btn").on("click", () => {
-    const action = confirmActionMap[confirmAction];
-    if (!action) {
-        return;
-    }
-    const result = action();
-    if (!result) {
-        return;
-    }
-    refreshUI();
-    actionPopover.hidePopover();
-    confirmAction = "";
-})
-
-$("#close-popover-btn").on("click", () => {
-    actionPopover.hidePopover();
-    confirmAction = "";
-})
-
-
 // Task Cards Drag & Drop
-$(document).on("dragstart", ".task-card", function (e) {
-    const taskId = $(this).data("id");
+const dragAndDrop = {
+    bindEvents() {
+        $(document).on("dragstart", ".task-card", function (e) {
+            const taskId = $(this).data("id");
 
-    e.originalEvent.dataTransfer.setData("text/plain", taskId);
-    $(this).addClass("dragging");
-});
+            e.originalEvent.dataTransfer.setData("text/plain", taskId);
+            $(this).addClass("dragging");
+        });
 
-$(document).on("dragend", ".task-card", function () {
-    $(this).removeClass("dragging");
-    $(".task-list").removeClass("drag-over");
-});
+        $(document).on("dragend", ".task-card", function () {
+            $(this).removeClass("dragging");
+            $(".task-list").removeClass("drag-over");
+        });
 
-$(document).on("dragover", ".task-list", function (e) {
-    e.preventDefault();
-    $(".task-list").removeClass("drag-over");
-    $(this).addClass("drag-over");
-});
+        $(document).on("dragover", ".task-list", function (e) {
+            e.preventDefault();
+            $(".task-list").removeClass("drag-over");
+            $(this).addClass("drag-over");
+        });
 
-$(document).on("drop", ".task-list", function (e) {
-    e.preventDefault();
-    $(".task-list").removeClass("drag-over");
+        $(document).on("drop", ".task-list", function (e) {
+            e.preventDefault();
+            $(".task-list").removeClass("drag-over");
 
-    const taskId = Number(e.originalEvent.dataTransfer.getData("text/plain"));
-    const targetStatus = this.id.replace("-list", "");
-    let tasks = loadTasksFromLocalStorage();
+            const taskId = Number(e.originalEvent.dataTransfer.getData("text/plain"));
+            const targetStatus = this.id.replace("-list", "");
+            let tasks = loadTasksFromLocalStorage();
 
-    const task = tasks.find(function (task) {
-        return task.id === taskId;
-    });
-    if (!task) {
-        return;
+            const task = tasks.find(function (task) {
+                return task.id === taskId;
+            });
+            if (!task) {
+                return;
+            }
+            task.status = targetStatus;
+            saveTasksToLocalStorage(tasks);
+            refreshUI();
+        });
+    },
+
+    init() {
+        this.bindEvents();
     }
-    task.status = targetStatus;
-    saveTasksToLocalStorage(tasks);
-    refreshUI();
-});
-
+}
 
 //dashboard
 const dashboard = {
+    dueStatusMap: {
+        "overdue": "overdue",
+        "due-soon": "dueSoon",
+        "normal": "normal",
+        "no-date": "noDate"
+    },
 
     calculateDashboardStats(tasks) {
         const stats = {
@@ -475,19 +505,12 @@ const dashboard = {
             completionRate: 0
         }
 
-        const dueStatusMap = {
-            "overdue": "overdue",
-            "due-soon": "dueSoon",
-            "normal": "normal",
-            "no-date": "noDate"
-        }
-
         $.each(tasks, (index, task) => {
             stats[task.status] += 1;
             if (task.status !== "done") {
                 stats[task.priority] += 1;
                 let dueStatus = getDueStatus(task.dueDate);
-                stats[dueStatusMap[dueStatus]] += 1;
+                stats[this.dueStatusMap[dueStatus]] += 1;
             }
         })
         stats.completionRate = ((stats.total === 0) ? 0 : Math.round(stats.done / stats.total * 100));
@@ -565,4 +588,3 @@ const dashboard = {
         this.renderPriorityFocus(tasks);
     }
 };
-
