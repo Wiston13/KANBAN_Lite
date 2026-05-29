@@ -260,7 +260,7 @@ function getDueStatus(dueDate) {
 
 let editingTaskId = -1;
 
-// taskmodal
+// Task Modal
 const taskModal = {
 
     fieldsMap: {
@@ -282,15 +282,25 @@ const taskModal = {
     },
 
     setFormValues(data) {
-        $.each(this.defaultFormValues, (index, element) => {
-            return $(`${this.fieldsMap[index]}`).val(data.index);
+        $.each(data, (index, element) => {
+            if (!(index in this.fieldsMap)) {
+                return;
+            }
+            $(this.fieldsMap[index]).val(element);
         })
     },
 
-    getFormValues(data) {
-        $.each(this.defaultFormValues, (index, element) => {
-            return $(`${this.fieldsMap[index]}`).val(data.index);
+    getTaskFromForm() {
+        const task = {
+            "id": (editingTaskId < 0) ? new Date().getTime() : editingTaskId
+        };
+        $.each(this.fieldsMap, (index, element) => {
+            task[index] = $(element).val().trim();
         })
+        if (!task.tag) {
+            task.tag = "general";
+        }
+        return task;
     },
 
     reset() {
@@ -299,12 +309,6 @@ const taskModal = {
         $("#delete-task-btn").hide();
 
         this.setFormValues(this.defaultFormValues);
-        // $("#task-title-input").val("");
-        // $("#task-description-input").val("");
-        // $("#task-tag-input").val("");
-        // $("#task-priority-input").val("medium");
-        // $("#task-status-input").val("todo");
-        // $("#due-date-input").val("");
     },
 
     open() {
@@ -341,14 +345,8 @@ const taskModal = {
             }
             editingTaskId = taskId;
 
-            this.setFormValues(task);
+            taskModal.setFormValues(task);
 
-            // $("#task-title-input").val(task.title);
-            // $("#task-description-input").val(task.content);
-            // $("#task-tag-input").val(task.tag);
-            // $("#task-priority-input").val(task.priority);
-            // $("#task-status-input").val(task.status);
-            // $("#due-date-input").val(task.dueDate);
             $(".task-modal-header h2").text("編輯任務");
             $("#delete-task-btn").show();
 
@@ -358,18 +356,8 @@ const taskModal = {
         $("#task-form").on("submit", function (e) {
             e.preventDefault();
             const tasks = loadTasksFromLocalStorage();
-            const task = {
-                "id": (editingTaskId < 0) ? new Date().getTime() : editingTaskId,
-                "title": $("#task-title-input").val().trim(),
-                "content": $("#task-description-input").val().trim(),
-                "priority": $("#task-priority-input").val(),
-                "tag": $("#task-tag-input").val().trim(),
-                "status": $("#task-status-input").val(),
-                "dueDate": $("#due-date-input").val()
-            };
-            if (task.tag === "") {
-                task.tag = "general";
-            }
+            const task = taskModal.getTaskFromForm();
+
             if (editingTaskId < 0) {
                 tasks.push(task);
             } else {
@@ -391,13 +379,13 @@ const taskModal = {
     }
 };
 
-// popover
+// Confirm Popover
 const confirmPopover = {
-    actionPopover: $("#confirm-popover")[0],
+    popoverElement: $("#confirm-popover")[0],
 
     currentAction: "",
 
-    confirmActionMap: {
+    actionMap: {
         "clear-task": () => {
             saveTasksToLocalStorage([]);
             return true;
@@ -429,11 +417,11 @@ const confirmPopover = {
     open(action, msg) {
         this.currentAction = action;
         $("#confirm-popover-message").text(msg);
-        this.actionPopover.showPopover();
+        this.popoverElement.showPopover();
     },
 
     confirm() {
-        const action = this.confirmActionMap[this.currentAction];
+        const action = this.actionMap[this.currentAction];
         if (!action) {
             return;
         }
@@ -442,12 +430,12 @@ const confirmPopover = {
             return;
         }
         refreshUI();
-        this.actionPopover.hidePopover();
+        this.popoverElement.hidePopover();
         this.currentAction = "";
     },
 
     cancel() {
-        this.actionPopover.hidePopover();
+        this.popoverElement.hidePopover();
         this.currentAction = "";
     },
 
@@ -526,9 +514,9 @@ const dragAndDrop = {
     }
 };
 
-//dashboard
+// Dashboard
 const dashboard = {
-    dueStatusMap: {
+    dueStatusKeyMap: {
         "overdue": "overdue",
         "due-soon": "dueSoon",
         "normal": "normal",
@@ -559,7 +547,7 @@ const dashboard = {
             if (task.status !== "done") {
                 stats[task.priority] += 1;
                 const dueStatus = getDueStatus(task.dueDate);
-                stats[this.dueStatusMap[dueStatus]] += 1;
+                stats[this.dueStatusKeyMap[dueStatus]] += 1;
             }
         })
         stats.completionRate = ((stats.total === 0) ? 0 : Math.round(stats.done / stats.total * 100));
@@ -576,7 +564,9 @@ const dashboard = {
         );
 
         if (focusTasks.length === 0) {
-            $(".priority-focus-container").append(`<p>目前沒有待處理的高優先度任務！</p>`);
+            const p = $("<p></p>");
+            p.append("目前沒有待處理的高優先度任務！");
+            $(".priority-focus-container").append(p);
             return;
         }
 
