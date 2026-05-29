@@ -365,29 +365,44 @@ function popoverAction(action, msg) {
     actionPopover.showPopover();
 }
 
-$("#confirm-action-btn").on("click", () => {
-    if (confirmAction === "clear-task") {
+const confirmActionMap = {
+    "clear-task": () => {
         saveTasksToLocalStorage([]);
-    } else if (confirmAction === "reset-task") {
+        return true;
+    },
+
+    "reset-task": () => {
         saveTasksToLocalStorage(tasks);
-    } else if (confirmAction === "delete-task") {
+        return true;
+    },
+
+    "delete-task": () => {
         if (editingTaskId < 0) {
-            return;
+            return false;
         }
         let tasks = loadTasksFromLocalStorage();
         let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
 
         if (tasksIndex === -1) {
             alert("發生錯誤，請重試一次!");
-            return;
+            return false;
         }
         tasks.splice(tasksIndex, 1);
         saveTasksToLocalStorage(tasks);
         closeAndResetTaskModal();
-    } else {
+        return true;
+    }
+};
+
+$("#confirm-action-btn").on("click", () => {
+    const action = confirmActionMap[confirmAction];
+    if (!action) {
         return;
     }
-
+    const result = action();
+    if (!result) {
+        return;
+    }
     refreshUI();
     actionPopover.hidePopover();
     confirmAction = "";
@@ -441,81 +456,52 @@ $(document).on("drop", ".task-list", function (e) {
 //dashboard
 const dashboard = {
 
-    totalCount(tasks) {
-        return tasks.length;
-    },
+    calculateDashboardStats(tasks) {
+        const stats = {
+            total: tasks.length,
+            todo: 0,
+            inprogress: 0,
+            done: 0,
 
-    todoCount(tasks) {
-        return tasks.filter(task => task.status === "todo").length;
-    },
+            high: 0,
+            medium: 0,
+            low: 0,
 
-    inprogressCount(tasks) {
-        return tasks.filter(task => task.status === "inprogress").length;
-    },
+            overdue: 0,
+            dueSoon: 0,
+            normal: 0,
+            noDate: 0,
 
-    doneCount(tasks) {
-        return tasks.filter(task => task.status === "done").length;
-    },
-
-    highCount(tasks) {
-        return tasks.filter(task =>
-            task.priority === "high" &&
-            task.status !== "done").length;
-    },
-
-    mediumCount(tasks) {
-        return tasks.filter(task =>
-            task.priority === "medium" &&
-            task.status !== "done").length;
-    },
-
-    lowCount(tasks) {
-        return tasks.filter(task =>
-            task.priority === "low" &&
-            task.status !== "done").length;
-    },
-
-    overDueCount(tasks) {
-        return tasks.filter(task =>
-            getDueStatus(task.dueDate) === "overdue" &&
-            task.status !== "done").length;
-    },
-
-    dueSoonCount(tasks) {
-        return tasks.filter(task =>
-            getDueStatus(task.dueDate) === "due-soon" &&
-            task.status !== "done").length;
-    },
-
-    normalCount(tasks) {
-        return tasks.filter(task =>
-            getDueStatus(task.dueDate) === "normal" &&
-            task.status !== "done").length;
-    },
-
-    noDateCount(tasks) {
-        return tasks.filter(task =>
-            getDueStatus(task.dueDate) === "no-date" &&
-            task.status !== "done").length;
-    },
-
-    completionRateCount(tasks) {
-        if (this.totalCount(tasks) === 0) {
-            return 0;
+            completionRate: 0
         }
-        return Math.round(this.doneCount(tasks) / this.totalCount(tasks) * 100);
-    },
 
-    getPriorityFocus(tasks) {
-        return tasks.filter(task =>
-            task.priority === "high" &&
-            task.status !== "done"
-        );
+        const dueStatusMap = {
+            "overdue": "overdue",
+            "due-soon": "dueSoon",
+            "normal": "normal",
+            "no-date": "noDate"
+        }
+
+        $.each(tasks, (index, task) => {
+            stats[task.status] += 1;
+            if (task.status !== "done") {
+                stats[task.priority] += 1;
+                let dueStatus = getDueStatus(task.dueDate);
+                stats[dueStatusMap[dueStatus]] += 1;
+            }
+        })
+        stats.completionRate = ((stats.total === 0) ? 0 : Math.round(stats.done / stats.total * 100));
+
+        return stats;
     },
 
     renderPriorityFocus(tasks) {
         $(".priority-focus-container").empty();
-        let focusTasks = this.getPriorityFocus(tasks);
+
+        let focusTasks = tasks.filter(task =>
+            task.priority === "high" &&
+            task.status !== "done"
+        );
 
         if (focusTasks.length === 0) {
             $(".priority-focus-container").append(`<p>目前沒有待處理的高優先度任務！</p>`);
@@ -556,21 +542,24 @@ const dashboard = {
 
     renderDashboard() {
         let tasks = loadTasksFromLocalStorage();
+        let dashboardStats = this.calculateDashboardStats(tasks);
 
-        $("#dashboard-total-count").text(this.totalCount(tasks));
-        $("#dashboard-todo-count").text(this.todoCount(tasks));
-        $("#dashboard-inprogress-count").text(this.inprogressCount(tasks));
-        $("#dashboard-done-count").text(this.doneCount(tasks));
-        $("#dashboard-high-count").text(this.highCount(tasks));
-        $("#dashboard-medium-count").text(this.mediumCount(tasks));
-        $("#dashboard-low-count").text(this.lowCount(tasks));
-        $("#dashboard-overdue-count").text(this.overDueCount(tasks));
-        $("#dashboard-due-soon-count").text(this.dueSoonCount(tasks));
-        $("#dashboard-normal-count").text(this.normalCount(tasks));
-        $("#dashboard-no-date-count").text(this.noDateCount(tasks));
+        $.each(dashboardStats, (index, value) => {
+            if (index === "completionRate") {
+                return;
+            }
 
+            let key = index;
+            if (key === "dueSoon") {
+                key = "due-soon";
+            } else if (key === "noDate") {
+                key = "no-date";
+            }
 
-        let rate = this.completionRateCount(tasks);
+            $("#dashboard-" + key + "-count").text(value);
+        })
+
+        let rate = dashboardStats.completionRate;
         $("#dashboard-completion-rate").text(rate + "%");
         $(".completion-progress-fill").css("width", rate + "%");
         this.renderPriorityFocus(tasks);
