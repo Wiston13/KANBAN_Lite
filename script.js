@@ -9,12 +9,13 @@ $(document).ready(() => {
 
         $(this).addClass("active");
 
-        let targetPageId = $(this).data("page-section");
+        const targetPageId = $(this).data("page-section");
         $("#" + targetPageId).addClass("active");
     })
 
     refreshUI();
     dragAndDrop.init();
+    taskModal.init();
     confirmPopover.init();
 })
 
@@ -216,7 +217,7 @@ function refreshUI() {
 function renderTasks() {
     $(".task-list").empty();
 
-    let tasks = loadTasksFromLocalStorage();
+    const tasks = loadTasksFromLocalStorage();
     $.each(tasks, function (index, element) {
         $("#" + element.status + "-list").append(createTaskCard(element));
     })
@@ -259,88 +260,136 @@ function getDueStatus(dueDate) {
 
 let editingTaskId = -1;
 
-function resetTaskForm() {
-    editingTaskId = -1;
-    $(".task-modal-header h2").text("新增任務");
-    $("#delete-task-btn").hide();
-    $("#task-title-input").val("");
-    $("#task-description-input").val("");
-    $("#task-tag-input").val("");
-    $("#task-priority-input").val("medium");
-    $("#task-status-input").val("todo");
-    $("#due-date-input").val("");
-}
+// taskmodal
+const taskModal = {
 
-function closeAndResetTaskModal() {
-    resetTaskForm();
-    $(".task-modal").removeClass("active");
-}
+    fieldsMap: {
+        "title": "#task-title-input",
+        "content": "#task-description-input",
+        "tag": "#task-tag-input",
+        "priority": "#task-priority-input",
+        "status": "#task-status-input",
+        "dueDate": "#due-date-input"
+    },
 
-$("#add-task-btn").on("click", () => {
-    resetTaskForm();
-    $(".task-modal").addClass("active");
-});
+    defaultFormValues: {
+        title: "",
+        content: "",
+        tag: "",
+        priority: "medium",
+        status: "todo",
+        dueDate: ""
+    },
 
-$(document).on("click", ".task-card", function () {
-    const taskId = Number($(this).data("id"));
-    let tasks = loadTasksFromLocalStorage();
-    const task = tasks.find(item => item.id === taskId);
-    if (!task) {
-        return;
+    setFormValues(data) {
+        $.each(this.defaultFormValues, (index, element) => {
+            return $(`${this.fieldsMap[index]}`).val(data.index);
+        })
+    },
+
+    getFormValues(data) {
+        $.each(this.defaultFormValues, (index, element) => {
+            return $(`${this.fieldsMap[index]}`).val(data.index);
+        })
+    },
+
+    reset() {
+        editingTaskId = -1;
+        $(".task-modal-header h2").text("新增任務");
+        $("#delete-task-btn").hide();
+
+        this.setFormValues(this.defaultFormValues);
+        // $("#task-title-input").val("");
+        // $("#task-description-input").val("");
+        // $("#task-tag-input").val("");
+        // $("#task-priority-input").val("medium");
+        // $("#task-status-input").val("todo");
+        // $("#due-date-input").val("");
+    },
+
+    open() {
+        $(".task-modal").addClass("active");
+    },
+
+    close() {
+        this.reset();
+        $(".task-modal").removeClass("active");
+    },
+
+    bindEvents() {
+        $("#add-task-btn").on("click", () => {
+            this.reset();
+            this.open();
+        });
+
+        $("#close-modal-btn").on("click", () => {
+            this.close();
+        })
+
+        $("#task-modal").on("click", function (e) {
+            if (e.target === this) {
+                taskModal.close();
+            }
+        })
+
+        $(document).on("click", ".task-card", function () {
+            const taskId = Number($(this).data("id"));
+            const tasks = loadTasksFromLocalStorage();
+            const task = tasks.find(item => item.id === taskId);
+            if (!task) {
+                return;
+            }
+            editingTaskId = taskId;
+
+            this.setFormValues(task);
+
+            // $("#task-title-input").val(task.title);
+            // $("#task-description-input").val(task.content);
+            // $("#task-tag-input").val(task.tag);
+            // $("#task-priority-input").val(task.priority);
+            // $("#task-status-input").val(task.status);
+            // $("#due-date-input").val(task.dueDate);
+            $(".task-modal-header h2").text("編輯任務");
+            $("#delete-task-btn").show();
+
+            taskModal.open();
+        })
+
+        $("#task-form").on("submit", function (e) {
+            e.preventDefault();
+            const tasks = loadTasksFromLocalStorage();
+            const task = {
+                "id": (editingTaskId < 0) ? new Date().getTime() : editingTaskId,
+                "title": $("#task-title-input").val().trim(),
+                "content": $("#task-description-input").val().trim(),
+                "priority": $("#task-priority-input").val(),
+                "tag": $("#task-tag-input").val().trim(),
+                "status": $("#task-status-input").val(),
+                "dueDate": $("#due-date-input").val()
+            };
+            if (task.tag === "") {
+                task.tag = "general";
+            }
+            if (editingTaskId < 0) {
+                tasks.push(task);
+            } else {
+                const tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
+                if (tasksIndex === -1) {
+                    alert("發生錯誤，請重試一次!");
+                    return;
+                }
+                tasks.splice(tasksIndex, 1, task);
+            }
+            saveTasksToLocalStorage(tasks);
+            refreshUI();
+            taskModal.close();
+        })
+    },
+
+    init() {
+        this.bindEvents();
     }
-    editingTaskId = taskId;
-    $("#task-title-input").val(task.title);
-    $("#task-description-input").val(task.content);
-    $("#task-tag-input").val(task.tag);
-    $("#task-priority-input").val(task.priority);
-    $("#task-status-input").val(task.status);
-    $("#due-date-input").val(task.dueDate);
-    $(".task-modal-header h2").text("編輯任務");
-    $("#delete-task-btn").show();
-
-    $(".task-modal").addClass("active");
-})
-
-$("#task-form").on("submit", function (e) {
-    e.preventDefault();
-    let tasks = loadTasksFromLocalStorage();
-    let task = {
-        "id": (editingTaskId < 0) ? new Date().getTime() : editingTaskId,
-        "title": $("#task-title-input").val().trim(),
-        "content": $("#task-description-input").val().trim(),
-        "priority": $("#task-priority-input").val(),
-        "tag": $("#task-tag-input").val().trim(),
-        "status": $("#task-status-input").val(),
-        "dueDate": $("#due-date-input").val()
-    };
-    if (task.tag === "") {
-        task.tag = "general";
-    }
-    if (editingTaskId < 0) {
-        tasks.push(task);
-    } else {
-        let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
-        if (tasksIndex === -1) {
-            alert("發生錯誤，請重試一次!");
-            return;
-        }
-        tasks.splice(tasksIndex, 1, task);
-    }
-    saveTasksToLocalStorage(tasks);
-    refreshUI();
-    closeAndResetTaskModal();
-})
-
-$("#close-modal-btn").on("click", () => {
-    closeAndResetTaskModal();
-})
-
-$("#task-modal").on("click", function (e) {
-    if (e.target === this) {
-        closeAndResetTaskModal();
-    }
-});
-
+};
 
 // popover
 const confirmPopover = {
@@ -363,8 +412,8 @@ const confirmPopover = {
             if (editingTaskId < 0) {
                 return false;
             }
-            let tasks = loadTasksFromLocalStorage();
-            let tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
+            const tasks = loadTasksFromLocalStorage();
+            const tasksIndex = tasks.findIndex(item => item.id === editingTaskId);
 
             if (tasksIndex === -1) {
                 alert("發生錯誤，請重試一次!");
@@ -372,7 +421,7 @@ const confirmPopover = {
             }
             tasks.splice(tasksIndex, 1);
             saveTasksToLocalStorage(tasks);
-            closeAndResetTaskModal();
+            taskModal.close();
             return true;
         }
     },
@@ -429,7 +478,7 @@ const confirmPopover = {
     init() {
         this.bindEvents();
     }
-}
+};
 
 // Task Cards Drag & Drop
 const dragAndDrop = {
@@ -458,7 +507,7 @@ const dragAndDrop = {
 
             const taskId = Number(e.originalEvent.dataTransfer.getData("text/plain"));
             const targetStatus = this.id.replace("-list", "");
-            let tasks = loadTasksFromLocalStorage();
+            const tasks = loadTasksFromLocalStorage();
 
             const task = tasks.find(function (task) {
                 return task.id === taskId;
@@ -475,7 +524,7 @@ const dragAndDrop = {
     init() {
         this.bindEvents();
     }
-}
+};
 
 //dashboard
 const dashboard = {
@@ -509,7 +558,7 @@ const dashboard = {
             stats[task.status] += 1;
             if (task.status !== "done") {
                 stats[task.priority] += 1;
-                let dueStatus = getDueStatus(task.dueDate);
+                const dueStatus = getDueStatus(task.dueDate);
                 stats[this.dueStatusMap[dueStatus]] += 1;
             }
         })
@@ -521,7 +570,7 @@ const dashboard = {
     renderPriorityFocus(tasks) {
         $(".priority-focus-container").empty();
 
-        let focusTasks = tasks.filter(task =>
+        const focusTasks = tasks.filter(task =>
             task.priority === "high" &&
             task.status !== "done"
         );
@@ -564,8 +613,8 @@ const dashboard = {
     },
 
     renderDashboard() {
-        let tasks = loadTasksFromLocalStorage();
-        let dashboardStats = this.calculateDashboardStats(tasks);
+        const tasks = loadTasksFromLocalStorage();
+        const dashboardStats = this.calculateDashboardStats(tasks);
 
         $.each(dashboardStats, (index, value) => {
             if (index === "completionRate") {
@@ -582,7 +631,7 @@ const dashboard = {
             $("#dashboard-" + key + "-count").text(value);
         })
 
-        let rate = dashboardStats.completionRate;
+        const rate = dashboardStats.completionRate;
         $("#dashboard-completion-rate").text(rate + "%");
         $(".completion-progress-fill").css("width", rate + "%");
         this.renderPriorityFocus(tasks);
