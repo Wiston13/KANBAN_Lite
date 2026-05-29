@@ -904,6 +904,10 @@ main {
     font-size: var(--font-size-base);
 }
 
+#due-date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
 #task-description-input {
     min-height: 120px;
     resize: vertical;
