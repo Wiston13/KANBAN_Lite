@@ -627,3 +627,24 @@ const dashboard = {
         this.renderPriorityFocus(tasks);
     }
 };
+
+
+$(".column-filter-btn").on("click", function (e) {
+    e.stopPropagation();
+
+    const currentPanel = $(this)
+        .closest(".column-filter")
+        .find(".column-filter-panel");
+
+    $(".column-filter-panel").not(currentPanel).removeClass("active");
+
+    currentPanel.toggleClass("active");
+});
+
+$(document).on("click", function () {
+    $(".column-filter-panel").removeClass("active");
+});
+
+$(".column-filter-panel").on("click", function (e) {
+    e.stopPropagation();
+});

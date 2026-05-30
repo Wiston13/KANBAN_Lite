@@ -481,9 +481,19 @@ main {
     box-shadow: var(--shadow-column);
 }
 
-.task-column h2 {
+.task-column-header {
     margin-bottom: var(--space-5);
     padding-bottom: var(--space-4);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--color-border-soft);
+}
+
+.task-column-header h2 {
+    margin: 0;
 
     display: flex;
     align-items: center;
@@ -493,11 +503,9 @@ main {
     font-size: var(--font-size-section-title);
     font-weight: var(--font-weight-title);
     letter-spacing: 0.02em;
-
-    border-bottom: 1px solid var(--color-border-soft);
 }
 
-.task-column h2::before {
+.task-column-header h2::before {
     content: "";
     flex-shrink: 0;
 
@@ -507,17 +515,69 @@ main {
     border-radius: 50%;
 }
 
-.task-column:nth-child(1) h2::before {
+.task-column:nth-child(1) .task-column-header h2::before {
     background-color: var(--color-text-muted);
 }
 
-.task-column:nth-child(2) h2::before {
+.task-column:nth-child(2) .task-column-header h2::before {
     background-color: var(--color-warning);
 }
 
-.task-column:nth-child(3) h2::before {
+.task-column:nth-child(3) .task-column-header h2::before {
     background-color: var(--color-success);
 }
+
+.task-column-header {
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--color-border-soft);
+}
+
+.task-column-header h2 {
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+
+    color: var(--color-text-primary);
+    font-size: var(--font-size-section-title);
+    font-weight: var(--font-weight-title);
+    letter-spacing: 0.02em;
+}
+
+.column-filter {
+    position: relative;
+}
+
+.column-filter-panel {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    right: 0;
+    z-index: 200;
+
+    width: 260px;
+    padding: var(--space-4);
+
+    display: none;
+    flex-direction: column;
+    gap: var(--space-4);
+
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-modal);
+}
+
+.column-filter-panel.active {
+    display: flex;
+}
+
 
 .task-list {
     width: 100%;
