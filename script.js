@@ -648,3 +648,35 @@ $(document).on("click", function () {
 $(".column-filter-panel").on("click", function (e) {
     e.stopPropagation();
 });
+
+
+$(".clear-column-filter-btn").on("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const currentColumn = $(this).closest(".task-column");
+
+    currentColumn
+        .find(".column-filter-panel input[type='checkbox']")
+        .prop("checked", false);
+});
+
+// $(document).on("click", ".clear-column-filter-btn", function (e) {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     const column = $(this).closest(".task-column");
+//     const status = column.data("status");
+
+//     column
+//         .find("input[type='checkbox']")
+//         .prop("checked", false);
+
+//     // 之後如果有 filterState
+//     // filterController.clearFilter(status);
+//     // refreshUI();
+// });
+
+// $(".clear-column-filter-btn").on("click", () => {
+//     console.log("clear clicked");
+//     $("input[type='checkbox']").prop("checked", false);
+// })
