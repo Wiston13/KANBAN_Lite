@@ -3,6 +3,10 @@
 KANBAN Lite 是一個使用 **HTML、CSS、JavaScript** 製作的小型任務流程管理工具。
 作品以 Kanban 看板為核心，讓使用者可以透過 **To Do、In Progress、Done** 三個欄位管理任務狀態，並搭配 Dashboard 查看任務統計與進度。
 
+GitHub Pages
+---
+Pages 網址：https://wiston13.github.io/KANBAN_Lite/
+
 ---
 
 ## 專案介紹
