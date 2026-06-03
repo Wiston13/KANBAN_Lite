@@ -667,15 +667,15 @@ function appendTagsToFilter(tasks) {
     if (tasks.length === 0) {
         return;
     }
-    let tags = new Set();
+    const tags = new Set();
     $.each(tasks, (index, element) => {
         tags.add(element.tag);
     })
 
-    let divTag = $("<div></div>");
+    const divTag = $("<div></div>");
     $.each(Array.from(tags), (index, tag) => {
-        let labelTag = $("<label></label>");
-        let InputTag = $("<input>").attr("type", "checkbox").data("filter-type", "tag").val(`${tag}`);
+        const labelTag = $("<label></label>");
+        const InputTag = $("<input>").attr("type", "checkbox").data("filter-type", "tag").val(`${tag}`);
         labelTag.append(InputTag).append(` ${tag}`);
         divTag.append(labelTag);
     });
@@ -683,4 +683,42 @@ function appendTagsToFilter(tasks) {
 }
 
 
-$(".column-filter-panel input[type='checkbox']").on("click", function () { })
+$(".column-filter-panel").on("click", "input[type='checkbox']", function () {
+    const tasks = loadTasksFromLocalStorage();
+    const currentTasks = [];
+    // if (tasks.length === 0) {
+    //     return;
+    // }
+    const checkedInput = $(".column-filter-panel input[type='checkbox']:checked");
+
+    const checkedFilterMap = {
+        dueStatus: new Set(),
+        priority: new Set(),
+        tag: new Set()
+    };
+
+    $.each(checkedInput, (index, input) => {
+        const filterType = $(input).data("filter-type");
+        checkedFilterMap[filterType].add($(input).val())
+    })
+
+    $.each(tasks, (index, task) => {
+        if (checkedFilterMap.priority.has(task.priority)) {
+            currentTasks.push(task);
+        }
+        if (checkedFilterMap.tag.has(task.tag)) {
+            currentTasks.push(task);
+        }
+        const dueDate = getDueStatus(task.dueDate);
+        if (checkedFilterMap.dueStatus.has(dueDate)) {
+            currentTasks.push(task);
+        }
+    })
+    console.log(currentTasks);
+
+    $(".task-list").empty();
+
+    $.each(currentTasks, function (index, element) {
+        $("#" + element.status + "-list").append(createTaskCard(element));
+    })
+})
