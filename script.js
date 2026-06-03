@@ -221,6 +221,7 @@ function renderTasks() {
     $.each(tasks, function (index, element) {
         $("#" + element.status + "-list").append(createTaskCard(element));
     })
+    appendTagsToFilter(tasks);
 }
 
 //防止XSS
@@ -660,55 +661,12 @@ $(".clear-column-filter-btn").on("click", function (e) {
         .prop("checked", false);
 });
 
-let dueStatusCheckedFilter = new Set();
-$(".column-filter-panel input[type='checkbox']").on("click", function () {
-    // let dueStatusCheckedFilter = new Set();
-    $.each($(".column-filter-panel input[type='checkbox']:checked"), (index, element) => {
-        dueStatusCheckedFilter.add(element);
-    })
-    console.log($(".column-filter-panel input[type='checkbox']:checked"));
-
-    // if ($(this).data("filter-type") === "dueStatus") {
-    //     if (dueStatusCheckedFilter.has($(this).val())) {
-    //         dueStatusCheckedFilter.delete($(this).val());
-    //     }
-    //     dueStatusCheckedFilter.add($(this).val());
-    // }
-
-
-    console.log(dueStatusCheckedFilter);
-    // let checkedFilter = $(".column-filter-panel input[type='checkbox']").filter(":checked");
-    // let dueStatusCheckedFilter = $(".column-filter-panel input[type='checkbox'][data-filter-type='dueStatus']:checked").val();
-
-    // console.log(checkedFilter.closest("label").text().trim());
-    // console.log(typeof (dueStatusCheckedFilter));
-
-})
-
-// const currentColumn = $(this).closest(".task-column");
-
-// let checkedFilter = $(".column-filter-panel input[type='checkbox']").prop("checked");
-// console.log(checkedFilter);
-
-function renderTasksWithFilter() {
-    $(".task-list").empty();
-
-    const tasks = loadTasksFromLocalStorage();
-
-
-    $.each(tasks, function (index, element) {
-        if (!(element in checkedFilter)) {
-            element.pop();
-        }
-        $("#" + element.status + "-list").append(createTaskCard(element));
-    })
-}
-
-// let dueStatusCheckedFilter = $(".column-filter-panel input[type='checkbox'][data-filter-type='dueStatus']:checked").val();
-// let priorityCheckedFilter = $(".column-filter-panel input[type='checkbox']").filter(":checked");
-// let tagCheckedFilter = $(".column-filter-panel input[type='checkbox']").filter(":checked");
 
 function appendTagsToFilter(tasks) {
+    $(".filter-section-tag div").empty();
+    if (tasks.length === 0) {
+        return;
+    }
     let tags = new Set();
     $.each(tasks, (index, element) => {
         tags.add(element.tag);
@@ -723,4 +681,6 @@ function appendTagsToFilter(tasks) {
     });
     $(".filter-section-tag").append(divTag);
 }
-appendTagsToFilter(tasks);
+
+
+$(".column-filter-panel input[type='checkbox']").on("click", function () { })
