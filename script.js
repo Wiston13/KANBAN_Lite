@@ -668,37 +668,34 @@ $(".clear-column-filter-btn").on("click", function (e) {
     })
 });
 
-
 function appendTagsToFilter(tasks) {
-    $(".filter-section-tag div").empty();
+    $(".filter-tag-options").empty();
+
     if (tasks.length === 0) {
         return;
     }
-    const tags = new Set();
-    $.each(tasks, (index, element) => {
-        tags.add(element.tag);
-    })
 
-    const divTag = $("<div></div>");
+    const tags = new Set();
+
+    $.each(tasks, (index, task) => {
+        tags.add(task.tag);
+    });
+
     $.each(Array.from(tags), (index, tag) => {
         const labelTag = $("<label></label>");
-        const InputTag = $("<input>").attr("type", "checkbox").data("filter-type", "tag").val(`${tag}`);
-        labelTag.append(InputTag).append(` ${tag}`);
-        divTag.append(labelTag);
-    });
-    $(".filter-section-tag").append(divTag);
-}
+        const inputTag = $("<input>").attr("type", "checkbox").data("filter-type", "tag").val(tag);
 
+        labelTag.append(inputTag).append(` ${tag}`);
+        $(".filter-tag-options").append(labelTag);
+    });
+}
 
 $(".column-filter-panel").on("click", "input[type='checkbox']", function () {
     const tasks = loadTasksFromLocalStorage();
     const currentTasks = [];
-    // if (tasks.length === 0) {
-    //     return;
-    // }
+    const currentColumn = $(this).closest(".task-column");
 
-    const checkedInput = $(".column-filter-panel input[type='checkbox']:checked");
-
+    const checkedInput = currentColumn.find(".column-filter-panel input[type='checkbox']:checked");
     const checkedFilterMap = {
         dueStatus: new Set(),
         priority: new Set(),
@@ -712,29 +709,21 @@ $(".column-filter-panel").on("click", "input[type='checkbox']", function () {
 
     $.each(tasks, (index, task) => {
         const dueDate = getDueStatus(task.dueDate);
-        const taskInPriority = checkedFilterMap.priority.has(task.priority);
-        const taskInDueDate = checkedFilterMap.dueStatus.has(dueDate);
-        const taskInTag = checkedFilterMap.tag.has(task.tag);
-        if (taskInPriority) {
-            currentTasks.push(task);
-        }
-        if (taskInDueDate) {
-            currentTasks.push(task);
-        }
-        if (taskInTag) {
+
+        const priorityPass = checkedFilterMap.priority.size === 0 || checkedFilterMap.priority.has(task.priority);
+        const dueDatePass = checkedFilterMap.dueStatus.size === 0 || checkedFilterMap.dueStatus.has(dueDate);
+        const tagPass = checkedFilterMap.tag.size === 0 || checkedFilterMap.tag.has(task.tag);
+
+        if (priorityPass && dueDatePass && tagPass) {
             currentTasks.push(task);
         }
     })
 
-    const currentTaskList = $(this).closest(".task-column");
-    $("#" + currentTaskList.data("status") + "-list").empty();
+    $("#" + currentColumn.data("status") + "-list").empty();
 
     $.each(currentTasks, function (index, task) {
-        if (task.status === currentTaskList.data("status")) {
-            $("#" + currentTaskList.data("status") + "-list").append(createTaskCard(task));
+        if (task.status === currentColumn.data("status")) {
+            $("#" + currentColumn.data("status") + "-list").append(createTaskCard(task));
         }
     })
-    if (currentTasks.length === 0) {
-        refreshUI();
-    }
 })

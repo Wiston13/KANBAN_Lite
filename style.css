@@ -619,6 +619,11 @@ main {
     letter-spacing: 0.03em;
 }
 
+.filter-tag-options {
+    display: flex;
+    flex-direction: column;
+}
+
 .filter-section label {
     padding: var(--space-1) var(--space-3);
 
