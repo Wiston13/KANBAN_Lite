@@ -652,13 +652,20 @@ $(".column-filter-panel").on("click", function (e) {
 
 $(".clear-column-filter-btn").on("click", function (e) {
     e.preventDefault();
-    e.stopPropagation();
+    // e.stopPropagation();
 
     const currentColumn = $(this).closest(".task-column");
 
-    currentColumn
-        .find(".column-filter-panel input[type='checkbox']")
-        .prop("checked", false);
+    currentColumn.find(".column-filter-panel input[type='checkbox']").prop("checked", false);
+
+    const currentTaskList = $(this).closest(".task-column");
+    const tasks = loadTasksFromLocalStorage();
+    $("#" + currentTaskList.data("status") + "-list").empty();
+    $.each(tasks, function (index, task) {
+        if (task.status === currentTaskList.data("status")) {
+            $("#" + currentTaskList.data("status") + "-list").append(createTaskCard(task));
+        }
+    })
 });
 
 
@@ -689,6 +696,7 @@ $(".column-filter-panel").on("click", "input[type='checkbox']", function () {
     // if (tasks.length === 0) {
     //     return;
     // }
+
     const checkedInput = $(".column-filter-panel input[type='checkbox']:checked");
 
     const checkedFilterMap = {
@@ -703,22 +711,30 @@ $(".column-filter-panel").on("click", "input[type='checkbox']", function () {
     })
 
     $.each(tasks, (index, task) => {
-        if (checkedFilterMap.priority.has(task.priority)) {
-            currentTasks.push(task);
-        }
-        if (checkedFilterMap.tag.has(task.tag)) {
-            currentTasks.push(task);
-        }
         const dueDate = getDueStatus(task.dueDate);
-        if (checkedFilterMap.dueStatus.has(dueDate)) {
+        const taskInPriority = checkedFilterMap.priority.has(task.priority);
+        const taskInDueDate = checkedFilterMap.dueStatus.has(dueDate);
+        const taskInTag = checkedFilterMap.tag.has(task.tag);
+        if (taskInPriority) {
+            currentTasks.push(task);
+        }
+        if (taskInDueDate) {
+            currentTasks.push(task);
+        }
+        if (taskInTag) {
             currentTasks.push(task);
         }
     })
-    console.log(currentTasks);
 
-    $(".task-list").empty();
+    const currentTaskList = $(this).closest(".task-column");
+    $("#" + currentTaskList.data("status") + "-list").empty();
 
-    $.each(currentTasks, function (index, element) {
-        $("#" + element.status + "-list").append(createTaskCard(element));
+    $.each(currentTasks, function (index, task) {
+        if (task.status === currentTaskList.data("status")) {
+            $("#" + currentTaskList.data("status") + "-list").append(createTaskCard(task));
+        }
     })
+    if (currentTasks.length === 0) {
+        refreshUI();
+    }
 })
